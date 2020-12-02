@@ -6,32 +6,41 @@ import Common;
 
 namespace aoc
 {
-	std::string partA(std::vector<int32> const& _input)
+	std::string part_a(std::vector<int32> const& _input)
 	{
-		for (usize i = 0; i < _input.size(); ++i)
+		std::array<bool, 2020> a{ false };
+		for (int32 const num : _input)
 		{
-			for (usize j = i + 1; j < _input.size(); ++j)
+			if (num < 2020)
 			{
-				if ((_input[i] + _input[j]) == 2020)
+				if (a[2020 - num])
 				{
-					return std::to_string(_input[i] * _input[j]);
+					return std::to_string(num * (2020 - num));
+				}
+				else
+				{
+					a[num] = true;
 				}
 			}
 		}
 		return "FAIL";
 	}
 
-	std::string partB(std::vector<int32> const& _input)
+	std::string part_b(std::vector<int32> const& _input)
 	{
 		for (usize i = 0; i < _input.size(); ++i)
 		{
 			for (usize j = i + 1; j < _input.size(); ++j)
 			{
-				for (usize k = j + 1; k < _input.size(); ++k)
+				int32 const iandj = _input[i] + _input[j];
+				if (iandj <= 2020)
 				{
-					if ((_input[i] + _input[j] + _input[k]) == 2020)
+					for (usize k = j + 1; k < _input.size(); ++k)
 					{
-						return std::to_string(_input[i] * _input[j] * _input[k]);
+						if ((iandj + _input[k]) == 2020)
+						{
+							return std::to_string(_input[i] * _input[j] * _input[k]);
+						}
 					}
 				}
 			}
@@ -41,7 +50,7 @@ namespace aoc
 
 	export std::string day1()
 	{
-		auto const input = LoadToNumbers<int32>(1);
-		return NiceOutput(1, partA(input), partB(input));
+		auto const input = input::to_numbers<int32>(1);
+		return nice_output(1, part_a(input), part_b(input));
 	}
 }

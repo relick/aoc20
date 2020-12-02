@@ -27,5 +27,8 @@
     <ClCompile Include="Common.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Day2.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
