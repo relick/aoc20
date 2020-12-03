@@ -18,15 +18,15 @@ namespace input
 		return f.tellg();
 	}
 
-	std::string get_filename_from_day(int32 _day)
+	std::string get_filename_from_day(int32 _day, bool _test)
 	{
 		std::string const dayStr = std::to_string(_day);
-		return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + ".txt";
+		return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + (_test ? "_test" : "") + ".txt";
 	}
 
-	export std::string to_string(int32 _day)
+	export std::string to_string(int32 _day, bool _test = false)
 	{
-		std::string const filename = get_filename_from_day(_day);
+		std::string const filename = get_filename_from_day(_day, _test);
 		size_t const size = get_filesize(filename);
 		std::ifstream f{ filename };
 		std::string buffer(size, ' ');
@@ -35,9 +35,9 @@ namespace input
 	}
 
 	export template<std::integral T>
-	std::vector<T> to_numbers(int32 _day)
+	std::vector<T> to_numbers(int32 _day, bool _test = false)
 	{
-		std::string const filename = get_filename_from_day(_day);
+		std::string const filename = get_filename_from_day(_day, _test);
 		size_t const size = get_filesize(filename);
 		std::ifstream f(filename);
 		std::vector<T> nums;
@@ -53,9 +53,9 @@ namespace input
 		return nums;
 	}
 
-	export std::vector<std::string> to_lines(int32 _day)
+	export std::vector<std::string> to_lines(int32 _day, bool _test = false)
 	{
-		std::string const filename = get_filename_from_day(_day);
+		std::string const filename = get_filename_from_day(_day, _test);
 		size_t const size = get_filesize(filename);
 		std::ifstream f(filename);
 		std::vector<std::string> lines;
@@ -87,6 +87,28 @@ namespace util
 
 		return output;
 	}
+
+	export template<typename T>
+	class grid
+	{
+		std::vector<T> m_data;
+		usize m_width{ 0 };
+		usize m_height{ 0 };
+	public:
+		grid(usize _width, usize _height, T const& _init = T())
+			: m_data(_width* _height, _init)
+			, m_width(_width)
+			, m_height(_height)
+		{}
+
+		T& at(usize _x, usize _y) { return m_data[_x + (m_width * _y)]; }
+		T const& at(usize _x, usize _y) const { return m_data[_x + (m_width * _y)]; }
+		T& operator[](usize _index) { return m_data[_index]; }
+		T const& operator[](usize _index) const { return m_data[_index]; }
+
+		usize const& width() const { return m_width; }
+		usize const& height() const { return m_height; }
+	};
 }
 
 namespace aoc

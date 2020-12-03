@@ -164,6 +164,7 @@
     <ClCompile Include="common.ixx" />
     <ClCompile Include="day_1.ixx" />
     <ClCompile Include="day_2.ixx" />
+    <ClCompile Include="day_3.ixx" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="str_split.ixx" />
   </ItemGroup>
