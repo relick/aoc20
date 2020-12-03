@@ -50,7 +50,7 @@ namespace aoc
 
 	export std::string day1()
 	{
-		auto const input = input::to_numbers<int32>(1);
+		auto const input = aoc::input(1).to_numbers<int32>();
 		return nice_output(1, part_a(input), part_b(input));
 	}
 }

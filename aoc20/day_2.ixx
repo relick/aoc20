@@ -60,7 +60,7 @@ namespace aoc
 
 	export std::string day2()
 	{
-		auto const input = input::to_lines(2);
+		auto const input = aoc::input(2).to_lines();
 		return nice_output(2, part_a(input), part_b(input));
 	}
 }

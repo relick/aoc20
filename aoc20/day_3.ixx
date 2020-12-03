@@ -53,7 +53,7 @@ namespace aoc
 
 	export std::string day_3()
 	{
-		auto const input = input::to_lines(3);
+		auto const input = aoc::input(3).to_lines();
 		auto const output = solution(input);
 		return nice_output(3, output.first, output.second);
 	}
