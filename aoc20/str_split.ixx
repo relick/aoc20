@@ -45,7 +45,7 @@ namespace util
 			, m_currentBegin{ _start }
 			, m_currentEnd{ _start }
 		{
-			operator++();
+			++(*this);
 		}
 
 		str_split_iter& operator++()
@@ -61,7 +61,7 @@ namespace util
 		str_split_iter operator++(int)
 		{
 			str_split_iter clone{ *this };
-			operator++();
+			++(*this);
 			return clone;
 		}
 
@@ -73,6 +73,11 @@ namespace util
 		bool operator!=(str_split_iter const& _b)
 		{
 			return m_currentBegin != _b.m_currentBegin; // assumed ends are equal if begins are equal.
+		}
+
+		std::string_view next()
+		{
+			return *((*this)++);
 		}
 	};
 

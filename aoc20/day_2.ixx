@@ -15,10 +15,10 @@ namespace aoc
 			auto range = util::str_split(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
 			auto iter = range.begin();
 
-			auto const lowerBound = util::svtoi<int32>(*(iter++));
-			auto const upperBound = util::svtoi<int32>(*(iter++));
-			char const checkChar = (*(iter++))[0];
-			std::string_view const testStr = *(iter++);
+			auto const lowerBound = util::svtoi<int32>(iter.next());
+			auto const upperBound = util::svtoi<int32>(iter.next());
+			char const checkChar = iter.next()[0];
+			std::string_view const testStr = iter.next();
 
 			usize numFound{};
 			for (char const c : testStr)
@@ -45,10 +45,10 @@ namespace aoc
 			auto range = util::str_split(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
 			auto iter = range.begin();
 
-			auto const firstIndex = util::svtoi<usize>(*(iter++)) - 1u;
-			auto const lastIndex = util::svtoi<usize>(*(iter++)) - 1u;
-			char const checkChar = (*(iter++))[0];	
-			std::string_view const testStr = *(iter++);
+			auto const firstIndex = util::svtoi<usize>(iter.next()) - 1u;
+			auto const lastIndex = util::svtoi<usize>(iter.next()) - 1u;
+			char const checkChar = iter.next()[0];
+			std::string_view const testStr = iter.next();
 
 			if ((checkChar == testStr[firstIndex]) ^ (checkChar == testStr[lastIndex]))
 			{
