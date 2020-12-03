@@ -12,7 +12,7 @@ namespace aoc
 		usize validPasswords{};
 		for (auto const& line : _input)
 		{
-			auto range = util::str_split_range(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
+			auto range = util::str_split(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
 			auto iter = range.begin();
 
 			auto const lowerBound = util::svtoi<int32>(*(iter++));
@@ -42,7 +42,7 @@ namespace aoc
 		usize validPasswords{};
 		for (auto const& line : _input)
 		{
-			auto range = util::str_split_range(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
+			auto range = util::str_split(line, [](char const& _c) { return _c == '-' || _c == ' ' || _c == ':'; });
 			auto iter = range.begin();
 
 			auto const firstIndex = util::svtoi<usize>(*(iter++)) - 1u;
