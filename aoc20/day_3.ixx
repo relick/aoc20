@@ -3,7 +3,6 @@ export module day_3;
 import std.core;
 
 import common;
-import str_split;
 
 namespace aoc
 {
