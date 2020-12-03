@@ -6,15 +6,15 @@ import common;
 
 namespace aoc
 {
-	usize check_slope(util::grid<char> const& _trees, usize _x_inc, usize _y_inc)
+	uint64 check_slope(util::grid<bool> const& _trees, usize _x_inc, usize _y_inc)
 	{
 		usize x{};
 		usize y{};
 
-		usize tree_count{};
+		uint64 tree_count{};
 		for (; y < _trees.height(); x += _x_inc, y += _y_inc)
 		{
-			tree_count += _trees.at(x % _trees.width(), y);
+			tree_count += _trees.at(x % _trees.width(), y) ? 1 : 0;
 		}
 
 		return tree_count;
@@ -24,7 +24,7 @@ namespace aoc
 	{
 		usize const width{ _input[0].size() };
 		usize const height{ _input.size() };
-		util::grid<char> trees(width, height, 0);
+		util::grid<bool> trees(width, height, 0);
 
 		for (usize y = 0; y < height; ++y)
 		{
@@ -32,12 +32,12 @@ namespace aoc
 			{
 				if (_input[y][x] == '#')
 				{
-					trees.at(x, y) = 1;
+					trees.at(x, y) = true;
 				}
 			}
 		}
 
-		usize const slope_a = check_slope(trees, 3, 1);
+		uint64 const slope_a = check_slope(trees, 3, 1);
 		std::string part_a = std::to_string(slope_a);
 
 		std::string part_b = std::to_string(

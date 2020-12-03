@@ -2,8 +2,12 @@ export module common;
 
 import std.core;
 
+export using uint64 = uint64_t;
+export using int64 = int64_t;
 export using uint32 = uint32_t;
 export using int32 = int32_t;
+export using uint16 = uint16_t;
+export using int16 = int16_t;
 export using uint8 = uint8_t;
 export using int8 = int8_t;
 export using usize = size_t;
@@ -105,6 +109,33 @@ namespace util
 		T const& at(usize _x, usize _y) const { return m_data[_x + (m_width * _y)]; }
 		T& operator[](usize _index) { return m_data[_index]; }
 		T const& operator[](usize _index) const { return m_data[_index]; }
+
+		usize const& width() const { return m_width; }
+		usize const& height() const { return m_height; }
+	};
+
+	struct bool_wrapper
+	{
+		bool m_b;
+	};
+
+	export template<>
+	class grid<bool>
+	{
+		std::vector<bool_wrapper> m_data;
+		usize m_width{ 0 };
+		usize m_height{ 0 };
+	public:
+		grid(usize _width, usize _height, bool const& _init = false)
+			: m_data(_width* _height, { _init })
+			, m_width(_width)
+			, m_height(_height)
+		{}
+
+		bool& at(usize _x, usize _y) { return m_data[_x + (m_width * _y)].m_b; }
+		bool const& at(usize _x, usize _y) const { return m_data[_x + (m_width * _y)].m_b; }
+		bool& operator[](usize _index) { return m_data[_index].m_b; }
+		bool const& operator[](usize _index) const { return m_data[_index].m_b; }
 
 		usize const& width() const { return m_width; }
 		usize const& height() const { return m_height; }
