@@ -161,10 +161,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Common.ixx" />
-    <ClCompile Include="Day1.ixx" />
-    <ClCompile Include="Day2.ixx" />
+    <ClCompile Include="common.ixx" />
+    <ClCompile Include="day_1.ixx" />
+    <ClCompile Include="day_2.ixx" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="str_split.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

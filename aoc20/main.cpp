@@ -6,8 +6,8 @@ import std.core;
 //import std.memory;
 //import std.threading;
 
-import Day1;
-import Day2;
+import day_1;
+import day_2;
 
 int main()
 {

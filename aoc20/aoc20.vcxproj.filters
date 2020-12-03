@@ -21,13 +21,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Day1.ixx">
+    <ClCompile Include="str_split.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Common.ixx">
+    <ClCompile Include="common.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Day2.ixx">
+    <ClCompile Include="day_1.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="day_2.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,8 +1,9 @@
-export module Day2;
+export module day_2;
 
 import std.core;
 
-import Common;
+import common;
+import str_split;
 
 namespace aoc
 {

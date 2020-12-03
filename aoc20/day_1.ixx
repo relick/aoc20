@@ -1,8 +1,8 @@
-export module Day1;
+export module day_1;
 
 import std.core;
 
-import Common;
+import common;
 
 namespace aoc
 {
