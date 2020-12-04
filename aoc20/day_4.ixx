@@ -15,6 +15,7 @@ namespace aoc
 
 	std::pair<std::string, std::string> solution(std::vector<std::string> const& _input)
 	{
+		aoc::timer time;
 		std::vector<passport> passports;
 		// parse
 		{
@@ -33,6 +34,7 @@ namespace aoc
 				passports.push_back(currentPassport);
 			}
 		}
+		time.end("parse");
 
 		std::string part_a;
 		std::string part_b;
@@ -90,7 +92,7 @@ namespace aoc
 			part_a = std::to_string(numValidA);
 			part_b = std::to_string(numValidB);
 		}
-
+		time.end("process");
 
 		return { part_a, part_b };
 	}

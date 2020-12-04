@@ -1,4 +1,4 @@
-export module common;
+﻿export module common;
 
 import std.core;
 
@@ -12,7 +12,6 @@ export using uint8 = uint8_t;
 export using int8 = int8_t;
 export using usize = size_t;
 export using isize = ptrdiff_t;
-
 
 namespace aoc
 {
@@ -117,6 +116,24 @@ namespace aoc
 	{
 		return std::string{ "Day " } + std::to_string(_day) + "\n--- \nPart A : " + _partA + "\nPart B : " + _partB + "\n\n";
 	}
+
+	export struct timer
+	{
+		std::chrono::time_point<std::chrono::high_resolution_clock> start;
+		timer()
+			: start{ std::chrono::high_resolution_clock::now() }
+		{}
+
+		void end(char const* _sectionName)
+		{
+			auto const end = std::chrono::high_resolution_clock::now();
+			auto const duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+			std::cout << "[" << duration << " micros to complete " << _sectionName << "]\n";
+
+			start = end;
+		}
+	};
 }
 
 namespace util

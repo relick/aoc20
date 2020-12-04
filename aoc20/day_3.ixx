@@ -22,6 +22,7 @@ namespace aoc
 
 	std::pair<std::string, std::string> solution(std::vector<std::string> const& _input)
 	{
+		aoc::timer time;
 		usize const width{ _input[0].size() };
 		usize const height{ _input.size() };
 		util::grid<bool> trees(width, height, 0);
@@ -36,6 +37,7 @@ namespace aoc
 				}
 			}
 		}
+		time.end("parse");
 
 		uint64 const slope_a = check_slope(trees, 3, 1);
 		std::string part_a = std::to_string(slope_a);
@@ -47,6 +49,7 @@ namespace aoc
 			* check_slope(trees, 7, 1)
 			* check_slope(trees, 1, 2)
 		);
+		time.end("process");
 
 		return { part_a, part_b };
 	}
