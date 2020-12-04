@@ -82,6 +82,35 @@ namespace aoc
 			}
 			return lines;
 		}
+
+		std::vector<std::string> to_blank_separated()
+		{
+			m_file.seekg(0);
+
+			std::vector<std::string> blocks;
+			blocks.reserve(std::min<usize>(m_filesize / 2, 50000)); // reserve but set a reasonable upper limit
+			std::string s;
+			blocks.emplace_back();
+			std::string* next_line = &blocks.back();
+			while (std::getline(m_file, s))
+			{
+				if (s.empty())
+				{
+					blocks.emplace_back();
+					next_line = &blocks.back();
+				}
+				if (!next_line->empty())
+				{
+					*next_line += '\n';
+				}
+				*next_line += s;
+			}
+			if (next_line->empty())
+			{
+				blocks.pop_back();
+			}
+			return blocks;
+		}
 	};
 
 	export std::string nice_output(int32 _day, std::string const& _partA, std::string const& _partB)
@@ -158,4 +187,16 @@ namespace util
 		usize const& width() const { return m_width; }
 		usize const& height() const { return m_height; }
 	};
+}
+
+namespace std
+{
+	struct bool_wrapper
+	{
+		bool m_b;
+		void operator=(bool _o) { m_b = _o; }
+		operator bool() const { return m_b; }
+	};
+
+	export using vector_bool = vector<bool_wrapper>;
 }

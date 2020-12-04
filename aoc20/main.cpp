@@ -9,11 +9,13 @@ import std.core;
 import day_1;
 import day_2;
 import day_3;
+import day_4;
 
 int main()
 {
 	//std::cout << aoc::day1() << std::endl;
 	//std::cout << aoc::day2() << std::endl;
-	std::cout << aoc::day_3() << std::endl;
+	//std::cout << aoc::day_3() << std::endl;
+	std::cout << aoc::day_4() << std::endl;
 	return 0;
 }

@@ -6,13 +6,13 @@ import common;
 
 namespace util
 {
-	export template<std::predicate<char> DelimFunction>
-		class str_split_iter
+	export template<typename str_T, std::predicate<char> DelimFunction>
+	class str_split_iter
 	{
-		std::string const& m_s;
+		str_T const& m_s;
 		DelimFunction m_fn;
 
-		using str_iter = std::string::const_iterator; // for now
+		using str_iter = typename str_T::const_iterator; // for now
 
 		str_iter m_currentBegin;
 		str_iter m_currentEnd;
@@ -39,7 +39,7 @@ namespace util
 		}
 
 	public:
-		str_split_iter(std::string const& _s, DelimFunction const& _fn, str_iter const& _start)
+		str_split_iter(str_T const& _s, DelimFunction const& _fn, str_iter const& _start)
 			: m_s{ _s }
 			, m_fn{ _fn }
 			, m_currentBegin{ _start }
@@ -81,21 +81,21 @@ namespace util
 		}
 	};
 
-	export template<std::predicate<char> DelimFunction>
+	export template<typename str_T, std::predicate<char> DelimFunction>
 		class str_split_range
 	{
-		std::string const& m_s;
+		str_T const& m_s;
 		DelimFunction m_fn;
 
 	public:
-		using iterator = str_split_iter<DelimFunction>;
+		using iterator = str_split_iter<str_T, DelimFunction>;
 		using difference_type = isize;
 		using size_type = usize;
 		using value_type = std::string_view;
 		using pointer = std::string_view*;
 		using reference = std::string_view&;
 
-		str_split_range(std::string const& _s, DelimFunction&& _fn)
+		str_split_range(str_T const& _s, DelimFunction&& _fn)
 			: m_s{ _s }
 			, m_fn{ _fn }
 		{}
@@ -111,8 +111,8 @@ namespace util
 		}
 	};
 
-	export template<std::predicate<char> DelimFunction>
-		str_split_range<DelimFunction> str_split(std::string const& _s, DelimFunction&& _fn)
+	export template<typename str_T, std::predicate<char> DelimFunction>
+	str_split_range<str_T, DelimFunction> str_split(str_T const& _s, DelimFunction&& _fn)
 	{
 		return { _s, std::forward<DelimFunction>(_fn) };
 	}
@@ -126,8 +126,8 @@ namespace util
 			bool operator()(char const& _c) { return _c == m_delim; }
 		};
 	}
-
-	export str_split_range<detail::char_is_delim> str_split(std::string const& _s, char _delim)
+	export template<typename str_T>
+	str_split_range<str_T, detail::char_is_delim> str_split(str_T const& _s, char _delim)
 	{
 		return { _s, detail::char_is_delim(_delim) };
 	}
