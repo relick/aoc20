@@ -129,9 +129,9 @@ namespace aoc
 			auto const end = std::chrono::high_resolution_clock::now();
 			auto const duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-			std::cout << "[" << duration << " micros to complete " << _sectionName << "]\n";
+			std::cout << "[" << duration << " us to complete " << _sectionName << "]\n";
 
-			start = end;
+			start = std::chrono::high_resolution_clock::now();
 		}
 	};
 }

@@ -1,40 +1,18 @@
 export module day_4;
 
-import std.core;
-import std.regex;
+#include "ctre.hpp"
+#include <vector>
+#include <string>
+//import std.core;
 
 import common;
 import str_split;
 
 namespace aoc
 {
-	struct passport
-	{
-		std::unordered_map<std::string, std::string> items;
-	};
-
 	std::pair<std::string, std::string> solution(std::vector<std::string> const& _input)
 	{
 		aoc::timer time;
-		std::vector<passport> passports;
-		// parse
-		{
-			passports.reserve(_input.size());
-			for (auto const& block : _input)
-			{
-				passport currentPassport;
-				for (auto const& keyPairStr : util::str_split(block, [](char const& _c) { return _c == ' ' || _c == '\n'; }))
-				{
-					auto keyPairSplit = util::str_split(keyPairStr, ':');
-					auto iter = keyPairSplit.begin();
-					auto const key = iter.next();
-					auto const value = iter.next();
-					currentPassport.items[std::string(key)] = value;
-				}
-				passports.push_back(currentPassport);
-			}
-		}
-		time.end("parse");
 
 		std::string part_a;
 		std::string part_b;
@@ -51,39 +29,73 @@ namespace aoc
 				return betweenIncl(_num, _isCM ? 150 : 59, _isCM ? 193 : 76);
 			};
 
-			std::regex const byr{ "[0-9]{4}" };
-			std::regex const iyr{ "[0-9]{4}" };
-			std::regex const eyr{ "[0-9]{4}" };
-			std::regex const hgt{ "([0-9]+)(cm|in)" };
-			std::regex const hcl{ "#[0-9a-f]{6}" };
-			std::regex const ecl{ "amb|blu|brn|gry|grn|hzl|oth" };
-			std::regex const pid{ "[0-9]{9}" };
+			static constexpr auto byr = ctll::fixed_string{ "^[0-9]{4}$" };
+			static constexpr auto iyr = ctll::fixed_string{ "^[0-9]{4}$" };
+			static constexpr auto eyr = ctll::fixed_string{ "^[0-9]{4}$" };
+			static constexpr auto hgt = ctll::fixed_string{ "^([0-9]+)(cm|in)$" };
+			static constexpr auto hcl = ctll::fixed_string{ "^#[0-9a-f]{6}$" };
+			static constexpr auto ecl = ctll::fixed_string{ "^(amb|blu|brn|gry|grn|hzl|oth)$" };
+			static constexpr auto pid = ctll::fixed_string{ "^[0-9]{9}$" };
 
-			for (auto const& passport : passports)
+			for (auto const& block : _input)
 			{
-				if (passport.items.size() >= 8)
+				uint8 validFieldsA = 0;
+				uint8 validFieldsB = 0;
+
+				for (auto const& keyPairStr : util::str_split(block, [](char const& _c) { return _c == ' ' || _c == '\n'; }))
 				{
-					numValidA++;
-				}
-				else if (passport.items.size() >= 7 && !passport.items.contains("cid"))
-				{
-					numValidA++;
-				}
-				else
-				{
-					continue;
+					auto keyPairSplit = util::str_split(keyPairStr, ':');
+					auto iter = keyPairSplit.begin();
+					auto const key = iter.next();
+					auto const value = iter.next();
+
+					if (key == "byr")
+					{
+						validFieldsA++;
+						auto m = ctre::match<byr>(value);
+						validFieldsB += (m && betweenIncl(util::svtoi<int32>(m.get<0>().to_view()), 1920, 2002)) ? 1 : 0;
+					}
+					else if (key == "iyr")
+					{
+						validFieldsA++;
+						auto m = ctre::match<iyr>(value);
+						validFieldsB += (m && betweenIncl(util::svtoi<int32>(m.get<0>().to_view()), 2010, 2020)) ? 1 : 0;
+					}
+					else if (key == "eyr")
+					{
+						validFieldsA++;
+						auto m = ctre::match<eyr>(value);
+						validFieldsB += (m && betweenIncl(util::svtoi<int32>(m.get<0>().to_view()), 2020, 2030)) ? 1 : 0;
+					}
+					else if (key == "hgt")
+					{
+						validFieldsA++;
+						auto m = ctre::match<hgt>(value);
+						validFieldsB += (m && hgtPolicy(util::svtoi<int32>(m.get<1>().to_view()), m.get<2>().to_view() == "cm")) ? 1 : 0;
+					}
+					else if (key == "hcl")
+					{
+						validFieldsA++;
+						validFieldsB += (ctre::match<hcl>(value)) ? 1 : 0;
+					}
+					else if (key == "ecl")
+					{
+						validFieldsA++;
+						validFieldsB += (ctre::match<ecl>(value)) ? 1 : 0;
+					}
+					else if (key == "pid")
+					{
+						validFieldsA++;
+						validFieldsB += (ctre::match<pid>(value)) ? 1 : 0;
+					}
 				}
 
-				std::smatch rmatches;
-				if (
-					std::regex_match(passport.items.at("byr"), rmatches, byr) && betweenIncl(std::stoi(rmatches[0].str()), 1920, 2002)
-					&& std::regex_match(passport.items.at("iyr"), rmatches, iyr) && betweenIncl(std::stoi(rmatches[0].str()), 2010, 2020)
-					&& std::regex_match(passport.items.at("eyr"), rmatches, eyr) && betweenIncl(std::stoi(rmatches[0].str()), 2020, 2030)
-					&& std::regex_match(passport.items.at("hgt"), rmatches, hgt) && hgtPolicy(std::stoi(rmatches[1].str()), rmatches[2].str() == "cm")
-					&& std::regex_match(passport.items.at("hcl"), hcl)
-					&& std::regex_match(passport.items.at("ecl"), ecl)
-					&& std::regex_match(passport.items.at("pid"), pid)
-					)
+				if (validFieldsA == 7)
+				{
+					numValidA++;
+				}
+
+				if (validFieldsB == 7)
 				{
 					numValidB++;
 				}
@@ -92,7 +104,7 @@ namespace aoc
 			part_a = std::to_string(numValidA);
 			part_b = std::to_string(numValidB);
 		}
-		time.end("process");
+		time.end("parse + process");
 
 		return { part_a, part_b };
 	}

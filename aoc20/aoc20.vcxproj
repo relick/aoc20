@@ -167,6 +167,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="str_split.ixx" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ctre.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
