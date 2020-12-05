@@ -127,11 +127,19 @@ namespace aoc
 		void end(char const* _sectionName)
 		{
 			auto const end = std::chrono::high_resolution_clock::now();
-			auto const duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+			auto const durationNS = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+			std::cout.imbue(std::locale(""));
+			if (durationNS > 1000)
+			{
+				auto const durationUS = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+				std::cout << "[" << durationUS << " us to complete " << _sectionName << "]\n";
+			}
+			else
+			{
+				std::cout << "[" << durationNS << " ns to complete " << _sectionName << "]\n";
+			}
 
-			std::cout << "[" << duration << " micros to complete " << _sectionName << "]\n";
-
-			start = end;
+			start = std::chrono::high_resolution_clock::now();
 		}
 	};
 }
