@@ -12,9 +12,9 @@ namespace aoc
 		usize y{};
 
 		uint64 tree_count{};
-		for (; y < _trees.height(); x += _x_inc, y += _y_inc)
+		for (; y < _trees.height(); x += _x_inc, x >= _trees.width() ? x -= _trees.width() : 0, y += _y_inc)
 		{
-			tree_count += _trees.at(x % _trees.width(), y) ? 1 : 0;
+			tree_count += _trees.at(x, y) ? 1 : 0;
 		}
 
 		return tree_count;
@@ -41,7 +41,7 @@ namespace aoc
 
 		uint64 const slope_a = check_slope(trees, 3, 1);
 		std::string part_a = std::to_string(slope_a);
-
+		
 		std::string part_b = std::to_string(
 			check_slope(trees, 1, 1)
 			* slope_a
@@ -50,6 +50,17 @@ namespace aoc
 			* check_slope(trees, 1, 2)
 		);
 		time.end("process");
+
+		uint64 output = 0;
+		aoc::timer100 time2([&trees, &output]()
+		{
+			output = check_slope(trees, 1, 1)
+				* check_slope(trees, 3, 1)
+				* check_slope(trees, 5, 1)
+				* check_slope(trees, 7, 1)
+				* check_slope(trees, 1, 2);
+		});
+		time2.run();
 
 		return { part_a, part_b };
 	}

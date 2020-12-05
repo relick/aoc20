@@ -142,6 +142,38 @@ namespace aoc
 			start = std::chrono::high_resolution_clock::now();
 		}
 	};
+
+	export template<typename fn>
+	struct timer100
+	{
+		fn m_fn;
+		timer100(fn const& _fn)
+			: m_fn(_fn)
+		{}
+
+		void run()
+		{
+			std::vector<uint64> times(100, 0);
+			for (usize i = 0; i < times.size(); ++i)
+			{
+				auto const start = std::chrono::high_resolution_clock::now();
+				m_fn();
+				auto const end = std::chrono::high_resolution_clock::now();
+				times[i] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+			}
+
+			std::sort(times.begin(), times.end());
+			uint64 const mean = std::accumulate(times.begin(), times.end(), 0u) / times.size();
+
+			std::cout.imbue(std::locale(""));
+			std::cout << "Median: ["
+				<< times[times.size() / 2 - 1] << "ns, "
+				<< times[times.size() / 2] << "ns, "
+				<< times[times.size() / 2 + 1] << "ns]"
+				<< std::endl;
+			std::cout << "Mean: [" << mean << "ns]" << std::endl;
+		}
+	};
 }
 
 namespace util
