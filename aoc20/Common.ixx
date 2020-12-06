@@ -171,7 +171,7 @@ namespace aoc
 			int64 const mean = std::accumulate(times.begin(), times.end(), static_cast<int64>(0)) / static_cast<int64>(times.size());
 
 			std::cout.imbue(std::locale(""));
-			std::cout << m_name << ":\n";
+			std::cout << num_runs << " runs - " << m_name << ":\n";
 			std::cout << "Median: ["
 				<< times[times.size() / 2 - 1] << "ns, "
 				<< times[times.size() / 2] << "ns, "
