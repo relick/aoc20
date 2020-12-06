@@ -144,16 +144,21 @@ namespace aoc
 	};
 
 	export template<typename fn>
-	struct timer100
+	struct multi_timer
 	{
 		fn m_fn;
-		timer100(fn const& _fn)
+		char const* m_name;
+		multi_timer(fn const& _fn, char const* _name)
 			: m_fn(_fn)
+			, m_name(_name)
 		{}
 
-		void run()
+		using ret_type = std::invoke_result_t<fn>;
+
+		template<usize num_runs = 1000>
+		ret_type run()
 		{
-			std::vector<uint64> times(1000, 0);
+			std::vector<int64> times(num_runs, 0);
 			for (usize i = 0; i < times.size(); ++i)
 			{
 				auto const start = std::chrono::high_resolution_clock::now();
@@ -163,15 +168,18 @@ namespace aoc
 			}
 
 			std::sort(times.begin(), times.end());
-			uint64 const mean = std::accumulate(times.begin(), times.end(), 0u) / times.size();
+			int64 const mean = std::accumulate(times.begin(), times.end(), static_cast<int64>(0)) / static_cast<int64>(times.size());
 
 			std::cout.imbue(std::locale(""));
+			std::cout << m_name << ":\n";
 			std::cout << "Median: ["
 				<< times[times.size() / 2 - 1] << "ns, "
 				<< times[times.size() / 2] << "ns, "
 				<< times[times.size() / 2 + 1] << "ns]"
 				<< std::endl;
-			std::cout << "Mean: [" << mean << "ns]" << std::endl;
+			std::cout << "Mean: [" << mean << "ns]\n\n";
+
+			return m_fn(); // one last time to get answer
 		}
 	};
 }

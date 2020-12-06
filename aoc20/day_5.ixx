@@ -77,13 +77,13 @@ namespace aoc
 					actual += thisSeatId;
 				}
 				total = ((highestSeatId - lowestSeatId) * (highestSeatId + lowestSeatId)) / 2;
-				mySeatId = total - actual;
+				mySeatId = (uint32) (total - actual);
 
 				//time.end("process a+b");
 			}
 		};
 
-		aoc::timer100 time(process);
+		aoc::multi_timer time(process, "process");
 		time.run();
 
 		return { std::to_string(highestSeatId), std::to_string(mySeatId) };

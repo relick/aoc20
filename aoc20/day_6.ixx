@@ -3,87 +3,85 @@ export module day_6;
 import std.core;
 
 import common;
-import str_split;
 
 namespace aoc
 {
-	std::pair<std::string, std::string> solution(std::vector<std::string> const& _input)
+	uint64 partA(std::vector<std::string> const& _input)
 	{
-		uint64 countA2{ 0 };
-		uint64 countB2{ 0 };
-		aoc::timer100 time([&countA2, &countB2, &_input]()
+		std::array<uint32, 26> bitflags;
+		std::generate(bitflags.begin(), bitflags.end(), [i = 0]() mutable { return (1 << i++); });
+
+		uint64 count{ 0 };
+		for (auto const& block : _input)
 		{
-			uint64 countA = 0;
-			uint64 countB = 0;
-			std::array<uint32, 26> bitflags;
+			uint32 groupAnswers{ 0 };
+			for (char const& c : block)
+			{
+				if (c != '\n')
+				{
+					groupAnswers |= bitflags[c - 'a'];
+				}
+			}
+
 			for (uint32 i = 0; i < 26; ++i)
 			{
-				bitflags[i] = 1 << i;
+				count += (groupAnswers & bitflags[i]) != 0;
 			}
-			for (auto const& block : _input)
-			{
-				uint32 thisBlockA{ 0 };
-				uint32 thisBlockB{ 0 };
-				uint32 currentPersonB{ 0 };
+		}
 
-				bool first{ true };
-				for (char const& c : block)
+		return count;
+	}
+
+	uint64 partB(std::vector<std::string> const& _input)
+	{
+		std::array<uint32, 26> bitflags;
+		std::generate(bitflags.begin(), bitflags.end(), [i = 0]() mutable { return (1 << i++); });
+
+		uint64 count{ 0 };
+		for (auto const& block : _input)
+		{
+			uint32 groupAnswers{ static_cast<uint32>(-1) };
+			uint32 currentPerson{ 0 };
+
+			for (char const& c : block)
+			{
+				if (c != '\n')
 				{
-					if (c != '\n')
-					{
-						uint32 const& n = bitflags[c - 'a'];
-						thisBlockA |= n;
-						currentPersonB |= n;
-					}
-					else
-					{
-						if (first)
-						{
-							thisBlockB = currentPersonB;
-							first = false;
-						}
-						else
-						{
-							thisBlockB &= currentPersonB;
-						}
-						currentPersonB = 0;
-					}
-				}
-				if (first)
-				{
-					thisBlockB = currentPersonB;
+					currentPerson |= bitflags[c - 'a'];
 				}
 				else
 				{
-					thisBlockB &= currentPersonB;
-				}
-
-				for (uint32 i = 0; i < 26; ++i)
-				{
-					uint32 const& n = bitflags[i];
-					if ((thisBlockA & n) != 0)
-					{
-						countA++;
-					}
-					if ((thisBlockB & n) != 0)
-					{
-						countB++;
-					}
+					groupAnswers &= currentPerson;
+					currentPerson = 0;
 				}
 			}
+			groupAnswers &= currentPerson;
 
-			countA2 = countA;
-			countB2 = countB;
-		});
-		time.run();
+			for (uint32 i = 0; i < 26; ++i)
+			{
+				count += (groupAnswers & bitflags[i]) != 0;
+			}
+		}
 
-		return { std::to_string(countA2), std::to_string(countB2) };
+		return count;
 	}
 
 	export std::string day_6()
 	{
 		auto const input = aoc::input(6).to_blank_separated();
-		auto const output = solution(input);
-		return nice_output(6, output.first, output.second);
+
+		aoc::multi_timer timeA([&input]()
+		{
+			return partA(input);
+		}, "6A");
+		auto const outputA = timeA.run();
+
+		aoc::multi_timer timeB([&input]()
+		{
+			return partB(input);
+		}, "6B");
+		auto const outputB = timeB.run();
+
+		return nice_output(6, std::to_string(outputA), std::to_string(outputB));
 	}
 }
