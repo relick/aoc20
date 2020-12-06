@@ -153,7 +153,7 @@ namespace aoc
 
 		void run()
 		{
-			std::vector<uint64> times(100, 0);
+			std::vector<uint64> times(1000, 0);
 			for (usize i = 0; i < times.size(); ++i)
 			{
 				auto const start = std::chrono::high_resolution_clock::now();
