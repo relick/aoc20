@@ -83,8 +83,8 @@ namespace aoc
 			}
 		};
 
-		aoc::multi_timer time(process, "process");
-		time.run();
+		aoc::multi_timer time("process");
+		time.run(process);
 
 		return { std::to_string(highestSeatId), std::to_string(mySeatId) };
 	}

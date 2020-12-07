@@ -143,26 +143,43 @@ namespace aoc
 		}
 	};
 
-	export template<typename fn>
-	struct multi_timer
+	export struct multi_timer
 	{
-		fn m_fn;
 		char const* m_name;
-		multi_timer(fn const& _fn, char const* _name)
-			: m_fn(_fn)
-			, m_name(_name)
+		usize m_num_runs;
+		multi_timer(char const* _name, usize _num_runs = 1000)
+			: m_name(_name)
+			, m_num_runs(_num_runs)
 		{}
 
-		using ret_type = std::invoke_result_t<fn>;
-
-		template<usize num_runs = 1000>
-		ret_type run()
+		static std::pair<double, char const*> get_timeframe(int64 _ns)
 		{
-			std::vector<int64> times(num_runs, 0);
+			if (_ns > 1000000000)
+			{
+				return { _ns / 1000000000.0, "s" };
+			}
+			else if (_ns > 1000000)
+			{
+				return { _ns / 1000000.0, "ms" };
+			}
+			else if (_ns > 1000)
+			{
+				return { _ns / 1000.0, "us" };
+			}
+			else
+			{
+				return { _ns, "ns" };
+			}
+		}
+
+		template<typename F, typename ...Args>
+		std::invoke_result_t<F, Args...> run(F&& _fn, Args... _args)
+		{
+			std::vector<int64> times(m_num_runs, 0);
 			for (usize i = 0; i < times.size(); ++i)
 			{
 				auto const start = std::chrono::high_resolution_clock::now();
-				m_fn();
+				_fn(_args...);
 				auto const end = std::chrono::high_resolution_clock::now();
 				times[i] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 			}
@@ -171,17 +188,31 @@ namespace aoc
 			int64 const mean = std::accumulate(times.begin(), times.end(), static_cast<int64>(0)) / static_cast<int64>(times.size());
 
 			std::cout.imbue(std::locale(""));
-			std::cout << num_runs << " runs - " << m_name << ":\n";
+			std::cout << std::setprecision(3);
+			std::cout << m_num_runs << " runs - " << m_name << ":\n";
+			auto const medLeftS = get_timeframe(times[times.size() / 2 - 1]);
+			auto const medMiddleS = get_timeframe(times[times.size() / 2]);
+			auto const medRightS = get_timeframe(times[times.size() / 2 + 1]);
 			std::cout << "Median: ["
-				<< times[times.size() / 2 - 1] << "ns, "
-				<< times[times.size() / 2] << "ns, "
-				<< times[times.size() / 2 + 1] << "ns]"
+				<< medLeftS.first << medLeftS.second << ", "
+				<< medMiddleS.first << medMiddleS.second << ", "
+				<< medRightS.first << medRightS.second << "]"
 				<< std::endl;
-			std::cout << "Mean: [" << mean << "ns]\n\n";
+			auto const meanS = get_timeframe(mean);
+			std::cout << "Mean: [" << meanS.first << meanS.second << "]\n\n";
 
-			return m_fn(); // one last time to get answer
+			return _fn(_args...); // one last time to get answer
 		}
 	};
+
+	export template<typename F, typename ...Args>
+	auto timed(F&& _fn, Args... _args)
+	{
+		auto const start = std::chrono::high_resolution_clock::now();
+		_fn(_args...);
+		auto const end = std::chrono::high_resolution_clock::now();
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+	}
 }
 
 namespace util

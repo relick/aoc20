@@ -12,6 +12,7 @@ import day_3;
 import day_4;
 import day_5;
 import day_6;
+import day_7;
 
 int main()
 {
@@ -20,6 +21,7 @@ int main()
 	//std::cout << aoc::day_3() << std::endl;
 	//std::cout << aoc::day_4() << std::endl;
 	//std::cout << aoc::day_5() << std::endl;
-	std::cout << aoc::day_6() << std::endl;
+	//std::cout << aoc::day_6() << std::endl;
+	std::cout << aoc::day_7() << std::endl;
 	return 0;
 }

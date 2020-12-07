@@ -51,15 +51,15 @@ namespace aoc
 		);
 		time.end("process");
 
-		aoc::multi_timer time2([&trees]()
+		aoc::multi_timer time2("3B");
+		uint64 output = time2.run([&trees]()
 		{
 			return check_slope(trees, 1, 1)
 				* check_slope(trees, 3, 1)
 				* check_slope(trees, 5, 1)
 				* check_slope(trees, 7, 1)
 				* check_slope(trees, 1, 2);
-		}, "3B");
-		uint64 output = time2.run();
+		});
 
 		return { part_a, part_b };
 	}

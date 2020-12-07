@@ -23,10 +23,7 @@ namespace aoc
 				}
 			}
 
-			for (uint32 i = 0; i < 26; ++i)
-			{
-				count += (groupAnswers & bitflags[i]) != 0;
-			}
+			count += __popcnt(groupAnswers);
 		}
 
 		return count;
@@ -57,10 +54,7 @@ namespace aoc
 			}
 			groupAnswers &= currentPerson;
 
-			for (uint32 i = 0; i < 26; ++i)
-			{
-				count += (groupAnswers & bitflags[i]) != 0;
-			}
+			count += __popcnt(groupAnswers);
 		}
 
 		return count;
@@ -70,17 +64,11 @@ namespace aoc
 	{
 		auto const input = aoc::input(6).to_blank_separated();
 
-		aoc::multi_timer timeA([&input]()
-		{
-			return partA(input);
-		}, "6A");
-		auto const outputA = timeA.run();
+		aoc::multi_timer timeA("6A");
+		auto const outputA = timeA.run(partA, input);
 
-		aoc::multi_timer timeB([&input]()
-		{
-			return partB(input);
-		}, "6B");
-		auto const outputB = timeB.run();
+		aoc::multi_timer timeB("6B");
+		auto const outputB = timeB.run(partB, input);
 
 		return nice_output(6, std::to_string(outputA), std::to_string(outputB));
 	}
