@@ -28,15 +28,21 @@ namespace aoc
 			return f.tellg();
 		}
 
-		std::string get_filename_from_day(int32 _day, bool _test)
+		std::string get_filename_from_day(int32 _day, char const* _ext)
 		{
 			std::string const dayStr = std::to_string(_day);
-			return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + (_test ? "_test" : "") + ".txt";
+			return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + "_" + _ext + ".txt";
 		}
 
 	public:
 		input(int32 _day, bool _test = false)
-			: m_filename{ get_filename_from_day(_day, _test) }
+			: m_filename{ get_filename_from_day(_day, _test ? "test" : "") }
+			, m_filesize{ get_filesize() }
+			, m_file{ m_filename }
+		{}
+
+		input(int32 _day, char const* _ext)
+			: m_filename{ get_filename_from_day(_day, _ext) }
 			, m_filesize{ get_filesize() }
 			, m_file{ m_filename }
 		{}
