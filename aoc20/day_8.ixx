@@ -26,19 +26,9 @@ namespace aoc
 		ops.reserve(_input.size());
 		for (auto const& line : _input)
 		{
+			OpType const type = line[0] == 'n' ? OpType::nop : line[0] == 'a' ? OpType::acc : OpType::jmp;
 			int16 const action = util::svtoi<int16>(std::string_view(line.begin() + (line[4] == '+' ? 5 : 4), line.end()));
-			if (line[0] == 'n') // nop
-			{
-				ops.emplace_back(OpType::nop, action);
-			}
-			else if (line[0] == 'a') // acc
-			{
-				ops.emplace_back(OpType::acc, action);
-			}
-			else // jmp
-			{
-				ops.emplace_back(OpType::jmp, action);
-			}
+			ops.emplace_back(type, action);
 		}
 
 		return ops;
@@ -80,21 +70,17 @@ namespace aoc
 	usize partB_rec(std::vector<Op> const& _ops, std::vector<usize>& _counts, usize _exe, usize _ip, usize _acc, bool _prevFlipped)
 	{
 		static constexpr usize sentinel = static_cast<usize>(-1);
-		if (_ip >= _ops.size())
-		{
-			return _acc;
-		}
 
-		if (_counts[_ip] >= _exe)
+		while (_counts[_ip] >= _exe && _ip < _ops.size())
 		{
 			_counts[_ip] = _exe;
 			switch (_ops[_ip].type)
 			{
 			case OpType::nop:
 			{
-				auto const asNop = partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc, _prevFlipped);
 				if (!_prevFlipped)
 				{
+					auto const asNop = partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc, _prevFlipped);
 					auto const asJmp = partB_rec(_ops, _counts, _exe + 1, _ip + _ops[_ip].action, _acc, true);
 					if (asNop != sentinel)
 					{
@@ -111,18 +97,22 @@ namespace aoc
 				}
 				else
 				{
-					return asNop;
+					++_ip;
 				}
+				break;
 			}
 			case OpType::acc:
 			{
-				return partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc + _ops[_ip].action, _prevFlipped);
+				//return partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc + _ops[_ip].action, _prevFlipped);
+				_acc += _ops[_ip].action;
+				++_ip;
+				break;
 			}
 			case OpType::jmp:
 			{
-				auto const asJmp = partB_rec(_ops, _counts, _exe + 1, _ip + _ops[_ip].action, _acc, _prevFlipped);
 				if (!_prevFlipped)
 				{
+					auto const asJmp = partB_rec(_ops, _counts, _exe + 1, _ip + _ops[_ip].action, _acc, _prevFlipped);
 					auto const asNop = partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc, true);
 					if (asNop != sentinel)
 					{
@@ -139,10 +129,17 @@ namespace aoc
 				}
 				else
 				{
-					return asJmp;
+					_ip += _ops[_ip].action;
 				}
+				break;
 			}
 			}
+			_exe++;
+		}
+
+		if (_ip >= _ops.size())
+		{
+			return _acc;
 		}
 		else
 		{
