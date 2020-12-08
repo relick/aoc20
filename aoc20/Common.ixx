@@ -31,12 +31,12 @@ namespace aoc
 		std::string get_filename_from_day(int32 _day, char const* _ext)
 		{
 			std::string const dayStr = std::to_string(_day);
-			return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + "_" + _ext + ".txt";
+			return std::string{ "inputs/" } + (dayStr.size() < 2 ? "0" : "") + dayStr + (_ext ? (std::string("_") + _ext) : "") + ".txt";
 		}
 
 	public:
 		input(int32 _day, bool _test = false)
-			: m_filename{ get_filename_from_day(_day, _test ? "test" : "") }
+			: m_filename{ get_filename_from_day(_day, _test ? "test" : nullptr) }
 			, m_filesize{ get_filesize() }
 			, m_file{ m_filename }
 		{}
@@ -174,7 +174,7 @@ namespace aoc
 			}
 			else
 			{
-				return { _ns, "ns" };
+				return { static_cast<double>(_ns), "ns" };
 			}
 		}
 
@@ -289,16 +289,4 @@ namespace util
 		usize const& width() const { return m_width; }
 		usize const& height() const { return m_height; }
 	};
-}
-
-namespace std
-{
-	struct bool_wrapper
-	{
-		bool m_b;
-		void operator=(bool _o) { m_b = _o; }
-		operator bool() const { return m_b; }
-	};
-
-	export using vector_bool = vector<bool_wrapper>;
 }
