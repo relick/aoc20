@@ -27,7 +27,8 @@ namespace aoc
 		for (auto const& line : _input)
 		{
 			OpType const type = line[0] == 'n' ? OpType::nop : line[0] == 'a' ? OpType::acc : OpType::jmp;
-			int16 const action = util::svtoi<int16>(std::string_view(line.begin() + (line[4] == '+' ? 5 : 4), line.end()));
+			//int16 const action = util::svtoi<int16>(std::string_view(line.begin() + (line[4] == '+' ? 5 : 4), line.end()));
+			int16 const action = std::stoi(line.substr(line[4] == '+' ? 5 : 4)); // somehow this is actually faster than the string view. // even though stoi handles +, it's faster ignoring it here too.
 			ops.emplace_back(type, action);
 		}
 
@@ -103,7 +104,6 @@ namespace aoc
 			}
 			case OpType::acc:
 			{
-				//return partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc + _ops[_ip].action, _prevFlipped);
 				_acc += _ops[_ip].action;
 				++_ip;
 				break;
