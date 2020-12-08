@@ -74,7 +74,7 @@ namespace aoc
 				}
 				case line_state::NumBags:
 				{
-					currentRule.num = util::svtoi<int>(str);
+					currentRule.num = util::qstoir<int>(str);
 					state = line_state::BagColour;
 					break;
 				}

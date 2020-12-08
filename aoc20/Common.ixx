@@ -179,7 +179,7 @@ namespace aoc
 		}
 
 		template<typename F, typename ...Args>
-		std::invoke_result_t<F, Args...> run(F&& _fn, Args... _args)
+		std::invoke_result_t<F, Args...> run(F&& _fn, Args... _args) const
 		{
 			std::vector<int64> times(m_num_runs, 0);
 			for (usize i = 0; i < times.size(); ++i)
@@ -223,22 +223,102 @@ namespace aoc
 
 namespace util
 {
-	export template <std::integral T>
-	T svtoi(std::string_view const& _sv)
+	export template<std::signed_integral I>
+	I qstoir(std::string_view const& _str)
 	{
-		T output;
-		std::from_chars_result res = std::from_chars(_sv.data(), _sv.data() + _sv.size(), output);
-
-		if (res.ec == std::errc::invalid_argument)
+		I n = 1;
+		I res = 0;
+		for (isize i = _str.size() - 1; i >= 0; --i, n *= 10)
 		{
-			throw std::invalid_argument{ "invalid_argument" };
+			if (isdigit(_str[i]))
+			{
+				res += n * (_str[i] - '0');
+			}
+			else if (_str[i] == '-')
+			{
+				res = -res;
+				break;
+			}
+			else
+			{
+				break;
+			}
 		}
-		else if (res.ec == std::errc::result_out_of_range)
-		{
-			throw std::out_of_range{ "out_of_range" };
-		}
+		return res;
+	}
 
-		return output;
+	export template<std::unsigned_integral I>
+	I qstoir(std::string_view const& _str)
+	{
+		I n = 1;
+		I res = 0;
+		for (isize i = _str.size() - 1; i >= 0; --i, n *= 10)
+		{
+			if (isdigit(_str[i]))
+			{
+				res += n * (_str[i] - '0');
+			}
+			else
+			{
+				break;
+			}
+		}
+		return res;
+	}
+
+	export template<std::integral I>
+		I qstoir(std::string const& _str)
+	{
+		return qstoir<I>(std::string_view(_str));
+	}
+
+	export template<std::signed_integral I>
+	I qstoil(std::string_view const& _str)
+	{
+		I negative = 1;
+		I res = 0;
+		for (char const c : _str)
+		{
+			if (isdigit(c))
+			{
+				res *= 10;
+				res += (c - '0');
+			}
+			else if (c == '-')
+			{
+				negative = -1;
+			}
+			else if (c != '+')
+			{
+				break;
+			}
+		}
+		return negative * res;
+	}
+
+	export template<std::unsigned_integral I>
+	I qstoil(std::string_view const& _str)
+	{
+		I res = 0;
+		for (char const c : _str)
+		{
+			if (isdigit(c))
+			{
+				res *= 10;
+				res += (c - '0');
+			}
+			else if (c != '+')
+			{
+				break;
+			}
+		}
+		return res;
+	}
+
+	export template<std::integral I>
+		I qstoil(std::string const& _str)
+	{
+		return qstoil<I>(std::string_view(_str));
 	}
 
 	export template<typename T>

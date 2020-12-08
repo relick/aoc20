@@ -24,11 +24,11 @@ namespace aoc
 	{
 		std::vector<Op> ops;
 		ops.reserve(_input.size());
+
 		for (auto const& line : _input)
 		{
 			OpType const type = line[0] == 'n' ? OpType::NOP : line[0] == 'a' ? OpType::ACC : OpType::JMP;
-			//int16 const action = util::svtoi<int16>(std::string_view(line.begin() + (line[4] == '+' ? 5 : 4), line.end()));
-			int16 const action = std::stoi(line.substr(line[4] == '+' ? 5 : 4)); // somehow this is actually faster than the string view. // even though stoi handles +, it's faster ignoring it here too.
+			int16 const action = util::qstoir<int16>(line);
 			ops.emplace_back(type, action);
 		}
 
@@ -69,13 +69,13 @@ namespace aoc
 		return acc;
 	}
 
-	usize partB_rec(std::vector<Op> const& _ops, std::vector<usize>& _counts, usize _exe, usize _ip, usize _acc, bool _prevFlipped)
+	usize partB_rec(std::vector<Op> const& _ops, std::vector<char>& _visited, usize _ip, usize _acc, bool _prevFlipped)
 	{
 		static constexpr usize sentinel = static_cast<usize>(-1);
 
-		while (_counts[_ip] >= _exe && _ip < _ops.size())
+		while (_ip < _ops.size() && !_visited[_ip])
 		{
-			_counts[_ip] = _exe;
+			_visited[_ip] = true;
 			switch (_ops[_ip].type)
 			{
 			using enum OpType;
@@ -83,8 +83,8 @@ namespace aoc
 			{
 				if (!_prevFlipped)
 				{
-					auto const asNop = partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc, _prevFlipped);
-					auto const asJmp = partB_rec(_ops, _counts, _exe + 1, _ip + _ops[_ip].action, _acc, true);
+					auto const asNop = partB_rec(_ops, _visited, _ip + 1, _acc, _prevFlipped);
+					auto const asJmp = partB_rec(_ops, _visited, _ip + _ops[_ip].action, _acc, true);
 					if (asNop != sentinel)
 					{
 						return asNop;
@@ -114,8 +114,8 @@ namespace aoc
 			{
 				if (!_prevFlipped)
 				{
-					auto const asJmp = partB_rec(_ops, _counts, _exe + 1, _ip + _ops[_ip].action, _acc, _prevFlipped);
-					auto const asNop = partB_rec(_ops, _counts, _exe + 1, _ip + 1, _acc, true);
+					auto const asJmp = partB_rec(_ops, _visited, _ip + _ops[_ip].action, _acc, _prevFlipped);
+					auto const asNop = partB_rec(_ops, _visited, _ip + 1, _acc, true);
 					if (asNop != sentinel)
 					{
 						return asNop;
@@ -136,7 +136,6 @@ namespace aoc
 				break;
 			}
 			}
-			_exe++;
 		}
 
 		if (_ip >= _ops.size())
@@ -151,14 +150,14 @@ namespace aoc
 
 	uint64 partB(std::vector<Op> const& _ops)
 	{
-		std::vector<usize> executionCounts(_ops.size(), std::numeric_limits<usize>::max());
+		std::vector<char> visited(_ops.size(), false);
 
-		return partB_rec(_ops, executionCounts, 0, 0, 0, false);
+		return partB_rec(_ops, visited, 0, 0, false);
 	}
 
 	export auto day_8()
 	{
-		auto const input = aoc::input(8).to_lines();
+		auto const input = aoc::input(8, "crystalux").to_lines();
 
 		aoc::multi_timer timeP("8 parse into ops");
 		auto const ops = timeP.run(parse, input);
