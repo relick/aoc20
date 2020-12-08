@@ -23,7 +23,7 @@ namespace aoc
 				}
 			}
 
-			count += __popcnt(groupAnswers);
+			count += std::popcount(groupAnswers);
 		}
 
 		return count;
@@ -54,7 +54,7 @@ namespace aoc
 			}
 			groupAnswers &= currentPerson;
 
-			count += __popcnt(groupAnswers);
+			count += std::popcount(groupAnswers);
 		}
 
 		return count;

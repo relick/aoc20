@@ -8,9 +8,9 @@ namespace aoc
 {
 	enum class OpType : uint8
 	{
-		nop,
-		acc,
-		jmp,
+		NOP,
+		ACC,
+		JMP,
 	};
 
 	struct Op
@@ -26,7 +26,7 @@ namespace aoc
 		ops.reserve(_input.size());
 		for (auto const& line : _input)
 		{
-			OpType const type = line[0] == 'n' ? OpType::nop : line[0] == 'a' ? OpType::acc : OpType::jmp;
+			OpType const type = line[0] == 'n' ? OpType::NOP : line[0] == 'a' ? OpType::ACC : OpType::JMP;
 			//int16 const action = util::svtoi<int16>(std::string_view(line.begin() + (line[4] == '+' ? 5 : 4), line.end()));
 			int16 const action = std::stoi(line.substr(line[4] == '+' ? 5 : 4)); // somehow this is actually faster than the string view. // even though stoi handles +, it's faster ignoring it here too.
 			ops.emplace_back(type, action);
@@ -46,18 +46,19 @@ namespace aoc
 			visited[ip] = true;
 			switch (_ops[ip].type)
 			{
-			case OpType::nop:
+			using enum OpType;
+			case NOP:
 			{
 				++ip;
 				break;
 			}
-			case OpType::acc:
+			case ACC:
 			{
 				acc += _ops[ip].action;
 				++ip;
 				break;
 			}
-			case OpType::jmp:
+			case JMP:
 			{
 				ip += _ops[ip].action;
 				break;
@@ -77,7 +78,8 @@ namespace aoc
 			_counts[_ip] = _exe;
 			switch (_ops[_ip].type)
 			{
-			case OpType::nop:
+			using enum OpType;
+			case NOP:
 			{
 				if (!_prevFlipped)
 				{
@@ -102,13 +104,13 @@ namespace aoc
 				}
 				break;
 			}
-			case OpType::acc:
+			case ACC:
 			{
 				_acc += _ops[_ip].action;
 				++_ip;
 				break;
 			}
-			case OpType::jmp:
+			case JMP:
 			{
 				if (!_prevFlipped)
 				{
