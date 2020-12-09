@@ -157,7 +157,7 @@ namespace aoc
 
 	export auto day_8()
 	{
-		auto const input = aoc::input(8, "crystalux").to_lines();
+		auto const input = aoc::input(8).to_lines();
 
 		aoc::multi_timer timeP("8 parse into ops");
 		auto const ops = timeP.run(parse, input);

@@ -228,11 +228,12 @@ namespace util
 	{
 		I n = 1;
 		I res = 0;
-		for (isize i = _str.size() - 1; i >= 0; --i, n *= 10)
+		for (isize i = _str.size() - 1; i >= 0; --i)
 		{
 			if (isdigit(_str[i]))
 			{
 				res += n * (_str[i] - '0');
+				n *= 10;
 			}
 			else if (_str[i] == '-')
 			{
@@ -252,11 +253,12 @@ namespace util
 	{
 		I n = 1;
 		I res = 0;
-		for (isize i = _str.size() - 1; i >= 0; --i, n *= 10)
+		for (isize i = _str.size() - 1; i >= 0; --i)
 		{
 			if (isdigit(_str[i]))
 			{
 				res += n * (_str[i] - '0');
+				n *= 10;
 			}
 			else
 			{

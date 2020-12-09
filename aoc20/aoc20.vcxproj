@@ -163,6 +163,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common.ixx" />
+    <ClCompile Include="Day9.ixx" />
     <ClCompile Include="day_1.ixx" />
     <ClCompile Include="day_2.ixx" />
     <ClCompile Include="day_3.ixx" />
