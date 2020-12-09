@@ -230,7 +230,7 @@ namespace util
 		I res = 0;
 		for (isize i = _str.size() - 1; i >= 0; --i)
 		{
-			if (isdigit(_str[i]))
+			if (_str[i] >= '0' && _str[i] <= '9')
 			{
 				res += n * (_str[i] - '0');
 				n *= 10;
@@ -255,7 +255,7 @@ namespace util
 		I res = 0;
 		for (isize i = _str.size() - 1; i >= 0; --i)
 		{
-			if (isdigit(_str[i]))
+			if (_str[i] >= '0' && _str[i] <= '9')
 			{
 				res += n * (_str[i] - '0');
 				n *= 10;
@@ -269,7 +269,7 @@ namespace util
 	}
 
 	export template<std::integral I>
-		I qstoir(std::string const& _str)
+	I qstoir(std::string const& _str)
 	{
 		return qstoir<I>(std::string_view(_str));
 	}
@@ -281,7 +281,7 @@ namespace util
 		I res = 0;
 		for (char const c : _str)
 		{
-			if (isdigit(c))
+			if (c >= '0' && c <= '9')
 			{
 				res *= 10;
 				res += (c - '0');
@@ -304,7 +304,7 @@ namespace util
 		I res = 0;
 		for (char const c : _str)
 		{
-			if (isdigit(c))
+			if (c >= '0' && c <= '9')
 			{
 				res *= 10;
 				res += (c - '0');
@@ -318,7 +318,7 @@ namespace util
 	}
 
 	export template<std::integral I>
-		I qstoil(std::string const& _str)
+	I qstoil(std::string const& _str)
 	{
 		return qstoil<I>(std::string_view(_str));
 	}

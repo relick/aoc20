@@ -6,17 +6,17 @@ import common;
 
 namespace aoc
 {
-	using int_t = int64;
+	using int_t = uint32;
 
 	std::vector<int_t> Parse(std::vector<std::string> const& _input)
 	{
 		std::vector<int_t> nums;
 		nums.reserve(_input.size());
 
-		std::transform(_input.begin(), _input.end(), std::back_inserter(nums), [](std::string const& _line)
+		for (auto const& line : _input)
 		{
-			return util::qstoir<int_t>(_line);
-		});
+			nums.emplace_back(util::qstoir<int_t>(line));
+		}
 
 		return nums;
 	}
@@ -28,9 +28,14 @@ namespace aoc
 			bool goodNum = false;
 			for (usize l = i - 25; l < i; ++l)
 			{
+				if (_nums[i] == 2 * _nums[l])
+				{
+					continue;
+				}
+				auto const sub = _nums[i] - _nums[l];
 				for (usize r = l + 1; r < i; ++r)
 				{
-					if (_nums[l] != _nums[r] && (_nums[l] + _nums[r]) == _nums[i])
+					if (sub == _nums[r])
 					{
 						goodNum = true;
 						goto breakout;
@@ -68,14 +73,8 @@ namespace aoc
 			}
 		}
 
-		auto min = _nums[l];
-		auto max = min;
-
-		for (usize i = l; i < r; ++i)
-		{
-			max = std::max(_nums[i], max);
-			min = std::min(_nums[i], min);
-		}
+		auto const min = *std::min_element(_nums.begin() + l, _nums.begin() + r);
+		auto const max = *std::max_element(_nums.begin() + l, _nums.begin() + r);
 
 		return min + max;
 	}
