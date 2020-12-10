@@ -43,19 +43,29 @@ namespace AoC
 		return diffs[1] * diffs[3];
 	}
 
-	static constexpr usize NumPrecalcWays = 5;
-
-	usize CalculateNumWays(std::array<usize, NumPrecalcWays> const& _ways, usize const _seq1s)
+	usize CalculateNumWays(usize const _seq1s)
 	{
-		if (NumPrecalcWays > _seq1s)
+		static constexpr std::array<usize, 5> numWaysFor{
+			1,
+			1,
+			2, // first 3 initial
+			4, // 1 + 1 + 2
+			7, // 1 + 2 + 4
+			// remainder can be calculated
+		};
+
+		// if precalced just return
+		if (numWaysFor.size() > _seq1s)
 		{
-			return _ways[_seq1s];
+			return numWaysFor[_seq1s];
 		}
-		usize prev3 = _ways[NumPrecalcWays - 3];
-		usize prev2 = _ways[NumPrecalcWays - 2];
-		usize prev1 = _ways[NumPrecalcWays - 1];
+
+		// otherwise we can figure it out
+		usize prev3 = numWaysFor[numWaysFor.size() - 3];
+		usize prev2 = numWaysFor[numWaysFor.size() - 2];
+		usize prev1 = numWaysFor[numWaysFor.size() - 1];
 		usize current = prev3 + prev2 + prev1;
-		usize index = NumPrecalcWays;
+		usize index = numWaysFor.size();
 
 		while (index < _seq1s)
 		{
@@ -71,33 +81,25 @@ namespace AoC
 
 	usize PartB(std::vector<int_t> const& _nums)
 	{
-		std::array<usize, NumPrecalcWays> numWaysFor{
-			1,
-			1,
-			2, // first 3 initial
-			4, // 1 + 1 + 2
-			7, // 1 + 2 + 4
-			// remainder can be calculated
-		};
-		usize sequential1s{ 0 };
+		usize seq1s{ 0 };
 		usize numWays{ 1 }; // always 1 way, we'll multiply this
 
-		if (_nums[0] == 1) { sequential1s++; } // outlet to first adapter
+		if (_nums[0] == 1) { seq1s++; } // outlet to first adapter
 
 		for (usize i = 0; i < _nums.size() - 1; ++i)
 		{
 			if (_nums[i + 1] - _nums[i] == 1)
 			{
-				sequential1s++;
+				seq1s++;
 			}
 			else
 			{
-				numWays *= CalculateNumWays(numWaysFor, sequential1s);
-				sequential1s = 0;
+				numWays *= CalculateNumWays(seq1s);
+				seq1s = 0;
 			}
 		}
 
-		numWays *= CalculateNumWays(numWaysFor, sequential1s);
+		numWays *= CalculateNumWays(seq1s); // last adapter into device
 
 		return numWays;
 	}
