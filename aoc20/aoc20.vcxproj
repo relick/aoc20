@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="AoC.ixx" />
     <ClCompile Include="Common.ixx" />
+    <ClCompile Include="Day10.ixx" />
     <ClCompile Include="Day9.ixx" />
     <ClCompile Include="Day1.ixx" />
     <ClCompile Include="Day2.ixx" />

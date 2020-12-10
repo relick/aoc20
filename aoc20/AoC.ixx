@@ -9,7 +9,7 @@ namespace AoC
 	export template<usize N>
 	std::string Day()
 	{
-		static_assert(false, "Day not yet implemented!");
+		//static_assert(false, "Day not yet implemented!");
 		return "Day not yet implemented!";
 	}
 
@@ -168,14 +168,21 @@ namespace AoC
 			std::cout.imbue(std::locale(""));
 			std::cout << std::setprecision(3);
 			std::cout << m_numRuns << " runs - " << m_name << ":\n";
-			auto const medLeftS = GetTimeframe(times[times.size() / 2 - 1]);
+			std::cout << "Median: [";
+			if (times.size() >= 2)
+			{
+				auto const medLeftS = GetTimeframe(times[times.size() / 2 - 1]);
+				std::cout << medLeftS.first << medLeftS.second << ", ";
+			}
 			auto const medMiddleS = GetTimeframe(times[times.size() / 2]);
-			auto const medRightS = GetTimeframe(times[times.size() / 2 + 1]);
-			std::cout << "Median: ["
-				<< medLeftS.first << medLeftS.second << ", "
-				<< medMiddleS.first << medMiddleS.second << ", "
-				<< medRightS.first << medRightS.second << "]"
-				<< std::endl;
+			std::cout << medMiddleS.first << medMiddleS.second << (times.size() >= 3 ? ", " : "]");
+			if (times.size() >= 3)
+			{
+				auto const medRightS = GetTimeframe(times[times.size() / 2 + 1]);
+				std::cout << medRightS.first << medRightS.second << "]";
+			}
+
+			std::cout << std::endl;
 			auto const meanS = GetTimeframe(mean);
 			std::cout << "Mean: [" << meanS.first << meanS.second << "]\n\n";
 

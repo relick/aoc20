@@ -60,5 +60,8 @@
     <ClCompile Include="AoC.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Day10.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
