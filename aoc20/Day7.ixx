@@ -1,11 +1,15 @@
-export module day_7;
+export module Day7;
 
 import std.core;
 
-import common;
-import str_split;
+import Common;
+import AoC;
+import Util;
+import StrSplit;
 
-namespace aoc
+static constexpr usize N = 7;
+
+namespace AoC
 {
 	struct BagData
 	{
@@ -19,7 +23,7 @@ namespace aoc
 		std::unordered_multimap<usize, rule> containsRules;
 	};
 
-	BagData parse(std::vector<std::string> const& _input)
+	BagData Parse(std::vector<std::string> const& _input)
 	{
 		usize nextColourID{ 0 };
 		BagData bagData;
@@ -74,7 +78,7 @@ namespace aoc
 				}
 				case line_state::NumBags:
 				{
-					currentRule.num = util::qstoir<int>(str);
+					currentRule.num = Util::QstoiR<int>(str);
 					state = line_state::BagColour;
 					break;
 				}
@@ -111,7 +115,7 @@ namespace aoc
 		return bagData;
 	}
 
-	uint64 partA(BagData const& _bagData)
+	uint64 PartA(BagData const& _bagData)
 	{
 		std::unordered_set<usize> bagsContainingShinyGold;
 		std::vector<usize> newBagsToCheck;
@@ -135,7 +139,7 @@ namespace aoc
 		return bagsContainingShinyGold.size();
 	}
 
-	uint64 partB_rec(BagData const& _bagData, usize _id)
+	uint64 PartBRecursion(BagData const& _bagData, usize _id)
 	{
 		uint64 total = 0;
 		auto const range = _bagData.containsRules.equal_range(_id);
@@ -148,31 +152,25 @@ namespace aoc
 			for (auto it = range.first; it != range.second; ++it)
 			{
 				auto const& rule = it->second;
-				total += rule.num * (1 + partB_rec(_bagData, rule.bagID));
+				total += rule.num * (1 + PartBRecursion(_bagData, rule.bagID));
 			}
 		}
 		return total;
 	}
 
-	uint64 partB(BagData const& _bagData)
+	uint64 PartB(BagData const& _bagData)
 	{
-		return partB_rec(_bagData, _bagData.colourIDs.at("shiny gold"));
+		return PartBRecursion(_bagData, _bagData.colourIDs.at("shiny gold"));
 	}
 
-	export auto day_7()
+	export template<>
+	std::string Day<N>()
 	{
-		auto const input = aoc::input(7).to_lines();
+		auto const input = Benchmark("7 Read", 1).Run([]() { return Input(N).ToLines(); });
+		auto const bagData = Benchmark("7 Make Graph", 50).Run(Parse, input);
+		auto const resultA = Benchmark("7A").Run(PartA, bagData);
+		auto const resultB = Benchmark("7B").Run(PartB, bagData);
 
-		aoc::multi_timer timeP("7 Make Graph", 50);
-		auto const bagData = timeP.run(parse, input);
-
-		aoc::multi_timer timeA("7A");
-		auto const resultA = timeA.run(partA, bagData);
-
-		aoc::multi_timer timeB("7B");
-		auto const resultB = timeB.run(partB, bagData);
-
-
-		return nice_output(7, std::to_string(resultA), std::to_string(resultB));
+		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}
 }

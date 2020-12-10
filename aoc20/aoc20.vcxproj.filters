@@ -21,37 +21,43 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="str_split.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="common.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_1.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_2.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_4.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_5.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_6.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_7.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="day_8.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Day9.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day1.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day2.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day5.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day6.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day7.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day8.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="StrSplit.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="AoC.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,12 +1,15 @@
-export module day_6;
+export module Day6;
 
 import std.core;
 
-import common;
+import Common;
+import AoC;
 
-namespace aoc
+static constexpr usize N = 6;
+
+namespace AoC
 {
-	uint64 partA(std::vector<std::string> const& _input)
+	uint64 PartA(std::vector<std::string> const& _input)
 	{
 		std::array<uint32, 26> bitflags;
 		std::generate(bitflags.begin(), bitflags.end(), [i = 0]() mutable { return (1 << i++); });
@@ -29,7 +32,7 @@ namespace aoc
 		return count;
 	}
 
-	uint64 partB(std::vector<std::string> const& _input)
+	uint64 PartB(std::vector<std::string> const& _input)
 	{
 		std::array<uint32, 26> bitflags;
 		std::generate(bitflags.begin(), bitflags.end(), [i = 0]() mutable { return (1 << i++); });
@@ -60,16 +63,13 @@ namespace aoc
 		return count;
 	}
 
-	export std::string day_6()
+	export template<>
+	std::string Day<N>()
 	{
-		auto const input = aoc::input(6).to_blank_separated();
+		auto const input = Benchmark("6 Read+Parse", 1).Run([]() { return Input(N).ToBlankSeparated(); });
+		auto const resultA = Benchmark("6A").Run(PartA, input);
+		auto const resultB = Benchmark("6B").Run(PartB, input);
 
-		aoc::multi_timer timeA("6A");
-		auto const outputA = timeA.run(partA, input);
-
-		aoc::multi_timer timeB("6B");
-		auto const outputB = timeB.run(partB, input);
-
-		return nice_output(6, std::to_string(outputA), std::to_string(outputB));
+		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}
 }

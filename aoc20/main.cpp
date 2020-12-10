@@ -6,26 +6,27 @@ import std.core;
 //import std.memory;
 //import std.threading;
 
-import day_1;
-import day_2;
-import day_3;
-import day_4;
-import day_5;
-import day_6;
-import day_7;
-import day_8;
+import AoC;
+import Day1;
+import Day2;
+import Day3;
+import Day4;
+import Day5;
+import Day6;
+import Day7;
+import Day8;
 import Day9;
 
 int main()
 {
-	//std::cout << aoc::day1() << std::endl;
-	//std::cout << aoc::day2() << std::endl;
-	//std::cout << aoc::day_3() << std::endl;
-	//std::cout << aoc::day_4() << std::endl;
-	//std::cout << aoc::day_5() << std::endl;
-	//std::cout << aoc::day_6() << std::endl;
-	//std::cout << aoc::day_7() << std::endl;
-	//std::cout << aoc::day_8() << std::endl;
-	std::cout << aoc::Day9() << std::endl;
+	std::cout << AoC::Day<1>() << std::endl;
+	std::cout << AoC::Day<2>() << std::endl;
+	std::cout << AoC::Day<3>() << std::endl;
+	std::cout << AoC::Day<4>() << std::endl;
+	std::cout << AoC::Day<5>() << std::endl;
+	std::cout << AoC::Day<6>() << std::endl;
+	std::cout << AoC::Day<7>() << std::endl;
+	std::cout << AoC::Day<8>() << std::endl;
+	std::cout << AoC::Day<9>() << std::endl;
 	return 0;
 }

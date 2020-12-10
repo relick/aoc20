@@ -1,10 +1,14 @@
-export module day_8;
+export module Day8;
 
 import std.core;
 
-import common;
+import Common;
+import AoC;
+import Util;
 
-namespace aoc
+static constexpr usize N = 8;
+
+namespace AoC
 {
 	enum class OpType : uint8
 	{
@@ -20,7 +24,7 @@ namespace aoc
 		int16 action;
 	};
 
-	std::vector<Op> parse(std::vector<std::string> const& _input)
+	std::vector<Op> Parse(std::vector<std::string> const& _input)
 	{
 		std::vector<Op> ops;
 		ops.reserve(_input.size());
@@ -28,14 +32,14 @@ namespace aoc
 		for (auto const& line : _input)
 		{
 			OpType const type = line[0] == 'n' ? OpType::NOP : line[0] == 'a' ? OpType::ACC : OpType::JMP;
-			int16 const action = util::qstoir<int16>(line);
+			int16 const action = Util::QstoiR<int16>(line);
 			ops.emplace_back(type, action);
 		}
 
 		return ops;
 	}
 
-	uint64 partA(std::vector<Op> const& _ops)
+	uint64 PartA(std::vector<Op> const& _ops)
 	{
 		std::vector<char> visited(_ops.size(), false);
 
@@ -69,7 +73,7 @@ namespace aoc
 		return acc;
 	}
 
-	usize partB_rec(std::vector<Op> const& _ops, std::vector<char>& _visited, usize _ip, usize _acc, bool _prevFlipped)
+	usize PartBRecursion(std::vector<Op> const& _ops, std::vector<char>& _visited, usize _ip, usize _acc, bool _prevFlipped)
 	{
 		static constexpr usize sentinel = static_cast<usize>(-1);
 
@@ -83,8 +87,8 @@ namespace aoc
 			{
 				if (!_prevFlipped)
 				{
-					auto const asNop = partB_rec(_ops, _visited, _ip + 1, _acc, _prevFlipped);
-					auto const asJmp = partB_rec(_ops, _visited, _ip + _ops[_ip].action, _acc, true);
+					auto const asNop = PartBRecursion(_ops, _visited, _ip + 1, _acc, _prevFlipped);
+					auto const asJmp = PartBRecursion(_ops, _visited, _ip + _ops[_ip].action, _acc, true);
 					if (asNop != sentinel)
 					{
 						return asNop;
@@ -114,8 +118,8 @@ namespace aoc
 			{
 				if (!_prevFlipped)
 				{
-					auto const asJmp = partB_rec(_ops, _visited, _ip + _ops[_ip].action, _acc, _prevFlipped);
-					auto const asNop = partB_rec(_ops, _visited, _ip + 1, _acc, true);
+					auto const asJmp = PartBRecursion(_ops, _visited, _ip + _ops[_ip].action, _acc, _prevFlipped);
+					auto const asNop = PartBRecursion(_ops, _visited, _ip + 1, _acc, true);
 					if (asNop != sentinel)
 					{
 						return asNop;
@@ -148,27 +152,21 @@ namespace aoc
 		}
 	}
 
-	uint64 partB(std::vector<Op> const& _ops)
+	uint64 PartB(std::vector<Op> const& _ops)
 	{
 		std::vector<char> visited(_ops.size(), false);
 
-		return partB_rec(_ops, visited, 0, 0, false);
+		return PartBRecursion(_ops, visited, 0, 0, false);
 	}
 
-	export auto day_8()
+	export template<>
+	std::string Day<N>()
 	{
-		auto const input = aoc::input(8).to_lines();
+		auto const input = Benchmark("8 Read", 1).Run([]() { return Input(N).ToLines(); });
+		auto const ops = Benchmark("8 Parse into Ops").Run(Parse, input);
+		auto const resultA = Benchmark("8A").Run(PartA, ops);
+		auto const resultB = Benchmark("8B").Run(PartB, ops);
 
-		aoc::multi_timer timeP("8 parse into ops");
-		auto const ops = timeP.run(parse, input);
-
-		aoc::multi_timer timeA("8A");
-		auto const resultA = timeA.run(partA, ops);
-
-		aoc::multi_timer timeB("8B");
-		auto const resultB = timeB.run(partB, ops);
-
-
-		return nice_output(8, std::to_string(resultA), std::to_string(resultB));
+		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}
 }

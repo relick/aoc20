@@ -2,9 +2,13 @@ export module Day9;
 
 import std.core;
 
-import common;
+import Common;
+import AoC;
+import Util;
 
-namespace aoc
+static constexpr usize N = 9;
+
+namespace AoC
 {
 	using int_t = uint32;
 
@@ -15,7 +19,7 @@ namespace aoc
 
 		for (auto const& line : _input)
 		{
-			nums.emplace_back(util::qstoir<int_t>(line));
+			nums.emplace_back(Util::QstoiR<int_t>(line));
 		}
 
 		return nums;
@@ -79,20 +83,14 @@ namespace aoc
 		return min + max;
 	}
 
-	export auto Day9()
+	export template<>
+	std::string Day<N>()
 	{
-		auto const input = aoc::input(9).to_lines();
+		auto const input = Benchmark("9 Read", 1).Run([]() { return Input(N).ToLines(); });
+		auto const nums = Benchmark("9 Parse into nums").Run(Parse, input);
+		auto const resultA = Benchmark("9A").Run(PartA, nums);
+		auto const resultB = Benchmark("9B").Run(PartB, nums, resultA);
 
-		aoc::multi_timer timeP("9 parse into nums");
-		auto const nums = timeP.run(Parse, input);
-
-		aoc::multi_timer timeA("9A");
-		auto const resultA = timeA.run(PartA, nums);
-
-		aoc::multi_timer timeB("9B");
-		auto const resultB = timeB.run(PartB, nums, resultA);
-
-
-		return nice_output(9, std::to_string(resultA), std::to_string(resultB));
+		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}
 }

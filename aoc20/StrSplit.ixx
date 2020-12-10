@@ -1,8 +1,8 @@
-export module str_split;
+export module StrSplit;
 
 import std.core;
 
-import common;
+import Common;
 
 namespace util
 {

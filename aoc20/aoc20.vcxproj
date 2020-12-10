@@ -164,18 +164,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="common.ixx" />
+    <ClCompile Include="AoC.ixx" />
+    <ClCompile Include="Common.ixx" />
     <ClCompile Include="Day9.ixx" />
-    <ClCompile Include="day_1.ixx" />
-    <ClCompile Include="day_2.ixx" />
-    <ClCompile Include="day_3.ixx" />
-    <ClCompile Include="day_4.ixx" />
-    <ClCompile Include="day_5.ixx" />
-    <ClCompile Include="day_6.ixx" />
-    <ClCompile Include="day_7.ixx" />
-    <ClCompile Include="day_8.ixx" />
+    <ClCompile Include="Day1.ixx" />
+    <ClCompile Include="Day2.ixx" />
+    <ClCompile Include="Day3.ixx" />
+    <ClCompile Include="Day4.ixx" />
+    <ClCompile Include="Day5.ixx" />
+    <ClCompile Include="Day6.ixx" />
+    <ClCompile Include="Day7.ixx" />
+    <ClCompile Include="Day8.ixx" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="str_split.ixx" />
+    <ClCompile Include="StrSplit.ixx" />
+    <ClCompile Include="Util.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,28 +1,30 @@
-export module day_4;
+export module Day4;
 
 import std.core;
 import std.regex;
 
-import common;
-import str_split;
+import Common;
+import AoC;
+import StrSplit;
 
-namespace aoc
+static constexpr usize N = 4;
+
+namespace AoC
 {
-	struct passport
+	struct Passport
 	{
 		std::unordered_map<std::string, std::string> items;
 	};
 
-	std::pair<std::string, std::string> solution(std::vector<std::string> const& _input)
+	std::pair<std::string, std::string> Solution(std::vector<std::string> const& _input)
 	{
-		aoc::timer time;
-		std::vector<passport> passports;
+		std::vector<Passport> passports;
 		// parse
 		{
 			passports.reserve(_input.size());
 			for (auto const& block : _input)
 			{
-				passport currentPassport;
+				Passport currentPassport;
 				for (auto const& keyPairStr : util::str_split(block, [](char const& _c) { return _c == ' ' || _c == '\n'; }))
 				{
 					auto keyPairSplit = util::str_split(keyPairStr, ':');
@@ -34,7 +36,6 @@ namespace aoc
 				passports.push_back(currentPassport);
 			}
 		}
-		time.end("parse");
 
 		std::string part_a;
 		std::string part_b;
@@ -92,15 +93,16 @@ namespace aoc
 			part_a = std::to_string(numValidA);
 			part_b = std::to_string(numValidB);
 		}
-		time.end("process");
 
 		return { part_a, part_b };
 	}
 
-	export std::string day_4()
+	export template<>
+	std::string Day<N>()
 	{
-		auto const input = aoc::input(4).to_blank_separated();
-		auto const output = solution(input);
-		return nice_output(4, output.first, output.second);
+		auto const input = Benchmark("4 Read", 1).Run([]() { return Input(N).ToBlankSeparated(); });
+		auto const output = Benchmark("4 Solution").Run(Solution, input);
+
+		return NiceOutput(N, output.first, output.second);
 	}
 }
