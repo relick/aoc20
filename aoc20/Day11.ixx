@@ -10,16 +10,16 @@ static constexpr usize N = 11;
 
 namespace AoC
 {
-	enum class SpaceType : uint8
+	enum SpaceType : uint8
 	{
-		Floor,
-		Empty,
-		Occupied,
+		Empty = 0,
+		Occupied = 1,
 	};
 
 	struct Space
 	{
-		SpaceType type{ SpaceType::Floor };
+		bool isFloor{ true };
+		SpaceType type{ SpaceType::Empty };
 		uint8 adjCount{ 0 };
 	};
 
@@ -33,7 +33,7 @@ namespace AoC
 			{
 				if (c == 'L')
 				{
-					layout.at(x, y).type = SpaceType::Empty;
+					layout.at(x, y).isFloor = false;
 				}
 				++x;
 			}
@@ -45,8 +45,6 @@ namespace AoC
 
 	usize PartA(Util::Grid<Space> _gridA, Util::Grid<Space> _gridB)
 	{
-		using enum SpaceType;
-
 		usize const rows = _gridA.height();
 		usize const cols = _gridA.width();
 
@@ -65,48 +63,35 @@ namespace AoC
 				for (usize x = 0; x < cols; ++x, ++index)
 				{
 					Space& cur = (*readGrid)[index];
-					if (cur.type != Floor)
+					if (!cur.isFloor)
 					{
-						uint8 toAddToOther = cur.type == Occupied ? 1 : 0;
 						bool const yAboveBottom = y < rows - 1;
 						if (x < cols - 1)
 						{
 							Space& r = (*readGrid)[index + 1];
-							if (r.type == Occupied)
-							{
-								cur.adjCount++;
-							}
-							r.adjCount += toAddToOther;
+							cur.adjCount += r.type;
+							r.adjCount += cur.type;
 
 							if (yAboveBottom)
 							{
 								Space& dr = (*readGrid)[index + 1 + cols];
-								if (dr.type == Occupied)
-								{
-									cur.adjCount++;
-								}
-								dr.adjCount += toAddToOther;
+								cur.adjCount += dr.type;
+								dr.adjCount += cur.type;
 							}
 						}
 						
 						if (x > 0 && yAboveBottom)
 						{
 							Space& dl = (*readGrid)[index - 1 + cols];
-							if (dl.type == Occupied)
-							{
-								cur.adjCount++;
-							}
-							dl.adjCount += toAddToOther;
+							cur.adjCount += dl.type;
+							dl.adjCount += cur.type;
 						}
 
 						if (yAboveBottom)
 						{
 							Space& d = (*readGrid)[index + cols];
-							if (d.type == Occupied)
-							{
-								cur.adjCount++;
-							}
-							d.adjCount += toAddToOther;
+							cur.adjCount += d.type;
+							d.adjCount += cur.type;
 						}
 
 						if (cur.type == Empty && cur.adjCount == 0)
@@ -145,8 +130,6 @@ namespace AoC
 
 	usize PartB(Util::Grid<Space> _gridA, Util::Grid<Space> _gridB)
 	{
-		using enum SpaceType;
-
 		usize const rows = _gridA.height();
 		usize const cols = _gridA.width();
 
@@ -165,10 +148,8 @@ namespace AoC
 				for (usize x = 0; x < cols; ++x, ++index)
 				{
 					Space& cur = (*readGrid)[index];
-					if (cur.type != Floor)
+					if (!cur.isFloor)
 					{
-						uint8 toAddToOther = cur.type == Occupied ? 1 : 0;
-
 						// right
 						usize const maxX = cols - x;
 						usize const maxY = cols * (rows - y);
@@ -177,17 +158,14 @@ namespace AoC
 							while (dx < maxX)
 							{
 								Space& r = (*readGrid)[index + dx];
-								if (r.type == Floor)
+								if (r.isFloor)
 								{
 									++dx;
 								}
 								else
 								{
-									if (r.type == Occupied)
-									{
-										cur.adjCount++;
-									}
-									r.adjCount += toAddToOther;
+									cur.adjCount += r.type;
+									r.adjCount += cur.type;
 									break;
 								}
 							}
@@ -200,18 +178,15 @@ namespace AoC
 							while (dx < maxX && dy < maxY)
 							{
 								Space& dr = (*readGrid)[index + dx + dy];
-								if (dr.type == Floor)
+								if (dr.isFloor)
 								{
 									++dx;
 									dy += cols;
 								}
 								else
 								{
-									if (dr.type == Occupied)
-									{
-										cur.adjCount++;
-									}
-									dr.adjCount += toAddToOther;
+									cur.adjCount += dr.type;
+									dr.adjCount += cur.type;
 									break;
 								}
 							}
@@ -223,17 +198,14 @@ namespace AoC
 							while (dy < maxY)
 							{
 								Space& d = (*readGrid)[index + dy];
-								if (d.type == Floor)
+								if (d.isFloor)
 								{
 									dy += cols;
 								}
 								else
 								{
-									if (d.type == Occupied)
-									{
-										cur.adjCount++;
-									}
-									d.adjCount += toAddToOther;
+									cur.adjCount += d.type;
+									d.adjCount += cur.type;
 									break;
 								}
 							}
@@ -247,18 +219,15 @@ namespace AoC
 							while (dx >= minX && dy < maxY)
 							{
 								Space& dl = (*readGrid)[index + dx + dy];
-								if (dl.type == Floor)
+								if (dl.isFloor)
 								{
 									--dx;
 									dy += cols;
 								}
 								else
 								{
-									if (dl.type == Occupied)
-									{
-										cur.adjCount++;
-									}
-									dl.adjCount += toAddToOther;
+									cur.adjCount += dl.type;
+									dl.adjCount += cur.type;
 									break;
 								}
 							}
@@ -289,10 +258,7 @@ namespace AoC
 		usize occupied = 0;
 		for (auto const& space : *readGrid)
 		{
-			if (space.type == SpaceType::Occupied)
-			{
-				++occupied;
-			}
+			occupied += space.type;
 		}
 
 		return occupied;
