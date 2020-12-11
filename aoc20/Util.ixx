@@ -126,6 +126,42 @@ namespace Util
 
 		usize const& width() const { return m_width; }
 		usize const& height() const { return m_height; }
+
+		constexpr typename std::vector<T>::iterator begin() noexcept { return m_data.begin(); }
+		constexpr typename std::vector<T>::const_iterator begin() const noexcept { return m_data.begin(); }
+		constexpr typename std::vector<T>::const_iterator cbegin() const noexcept { return m_data.cbegin(); }
+		constexpr typename std::vector<T>::iterator end() noexcept { return m_data.end(); }
+		constexpr typename std::vector<T>::const_iterator end() const noexcept { return m_data.end(); }
+		constexpr typename std::vector<T>::const_iterator cend() const noexcept { return m_data.cend(); }
+	};
+
+	export template<typename T>
+	class Grid2
+	{
+		std::vector<std::vector<T>> m_data;
+		usize m_width{ 0 };
+		usize m_height{ 0 };
+	public:
+		Grid2(usize _width, usize _height, T const& _init = T())
+			: m_data(_height, std::vector<T>(_width, _init))
+			, m_width(_width)
+			, m_height(_height)
+		{}
+
+		T& at(usize _x, usize _y) { return m_data[_y][_x]; }
+		T const& at(usize _x, usize _y) const { return m_data[_y][_x]; }
+		T& operator[](usize _index) { return m_data[_index / m_width][_index % m_width]; }
+		T const& operator[](usize _index) const { return m_data[_index / m_width][_index % m_width]; }
+
+		usize const& width() const { return m_width; }
+		usize const& height() const { return m_height; }
+
+		constexpr typename std::vector<std::vector<T>>::iterator begin() noexcept { return m_data.begin(); }
+		constexpr typename std::vector<std::vector<T>>::const_iterator begin() const noexcept { return m_data.begin(); }
+		constexpr typename std::vector<std::vector<T>>::const_iterator cbegin() const noexcept { return m_data.cbegin(); }
+		constexpr typename std::vector<std::vector<T>>::iterator end() noexcept { return m_data.end(); }
+		constexpr typename std::vector<std::vector<T>>::const_iterator end() const noexcept { return m_data.end(); }
+		constexpr typename std::vector<std::vector<T>>::const_iterator cend() const noexcept { return m_data.cend(); }
 	};
 
 	struct bool_wrapper

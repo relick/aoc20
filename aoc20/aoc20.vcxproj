@@ -167,6 +167,7 @@
     <ClCompile Include="AoC.ixx" />
     <ClCompile Include="Common.ixx" />
     <ClCompile Include="Day10.ixx" />
+    <ClCompile Include="Day11.ixx" />
     <ClCompile Include="Day9.ixx" />
     <ClCompile Include="Day1.ixx" />
     <ClCompile Include="Day2.ixx" />
@@ -179,6 +180,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="StrSplit.ixx" />
     <ClCompile Include="Util.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ctre.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
