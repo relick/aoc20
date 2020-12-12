@@ -69,6 +69,9 @@
     <ClCompile Include="Day12.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Day12Intrin.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ctre.hpp">

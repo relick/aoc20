@@ -119,6 +119,33 @@ namespace Util
 			, m_height(_height)
 		{}
 
+		Grid(Grid const& _oth)
+			: m_data(_oth.m_data)
+			, m_width(_oth.m_width)
+			, m_height(_oth.m_height)
+		{}
+		Grid(Grid&& _oth)
+			: m_data(std::move(_oth.m_data))
+			, m_width(_oth.m_width)
+			, m_height(_oth.m_height)
+		{}
+		Grid& operator=(Grid&& _oth)
+		{
+			m_data = std::move(_oth.m_data);
+			m_width = _oth.m_width;
+			m_height = _oth.m_height;
+			_oth.m_width = 0;
+			_oth.m_height = 0;
+			return *this;
+		}
+		Grid& operator=(Grid const& _oth)
+		{
+			m_data = _oth.m_data;
+			m_width = _oth.m_width;
+			m_height = _oth.m_height;
+			return *this;
+		}
+
 		T& at(usize _x, usize _y) { return m_data[_x + (m_width * _y)]; }
 		T const& at(usize _x, usize _y) const { return m_data[_x + (m_width * _y)]; }
 		T& operator[](usize _index) { return m_data[_index]; }
