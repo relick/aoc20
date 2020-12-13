@@ -132,15 +132,15 @@ namespace AoC
 
 		static std::pair<double, char const*> GetTimeframe(int64 _ns)
 		{
-			if (_ns > 1000000000)
+			if (_ns >= 1000000000)
 			{
 				return { _ns / 1000000000.0, "s" };
 			}
-			else if (_ns > 1000000)
+			else if (_ns >= 1000000)
 			{
 				return { _ns / 1000000.0, "ms" };
 			}
-			else if (_ns > 1000)
+			else if (_ns >= 1000)
 			{
 				return { _ns / 1000.0, "us" };
 			}
