@@ -157,6 +157,9 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <IntelJCCErratum>true</IntelJCCErratum>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,6 +176,8 @@
     <ClCompile Include="Day12.ixx" />
     <ClCompile Include="Day12Intrin.ixx" />
     <ClCompile Include="Day13.ixx" />
+    <ClCompile Include="Day14.ixx" />
+    <ClCompile Include="Day15.ixx" />
     <ClCompile Include="Day9.ixx" />
     <ClCompile Include="Day1.ixx" />
     <ClCompile Include="Day2.ixx" />
@@ -187,7 +192,6 @@
     <ClCompile Include="Util.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ctre.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

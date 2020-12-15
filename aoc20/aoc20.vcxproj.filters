@@ -75,9 +75,14 @@
     <ClCompile Include="Day13.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Day14.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day15.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ctre.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
