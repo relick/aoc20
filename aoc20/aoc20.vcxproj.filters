@@ -1,27 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AoC.ixx" />
-    <ClCompile Include="Common.ixx" />
-    <ClCompile Include="Day10.ixx" />
-    <ClCompile Include="Day11.ixx" />
-    <ClCompile Include="Day12.ixx" />
-    <ClCompile Include="Day12Intrin.ixx" />
-    <ClCompile Include="Day13.ixx" />
-    <ClCompile Include="Day14.ixx" />
-    <ClCompile Include="Day15.ixx" />
-    <ClCompile Include="Day9.ixx" />
-    <ClCompile Include="Day1.ixx" />
-    <ClCompile Include="Day2.ixx" />
-    <ClCompile Include="Day3.ixx" />
-    <ClCompile Include="Day4.ixx" />
-    <ClCompile Include="Day5.ixx" />
-    <ClCompile Include="Day6.ixx" />
-    <ClCompile Include="Day7.ixx" />
-    <ClCompile Include="Day8.ixx" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="StrSplit.ixx" />
-    <ClCompile Include="Util.ixx" />
-    <ClCompile Include="Day16.ixx" />
+    <ClCompile Include="Day16.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="AoC.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day1.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day2.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day5.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day6.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day7.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day8.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day9.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day10.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day11.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day12.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day12Intrin.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day13.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day14.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day15.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="StrSplit.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Day17.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{8ab1dd44-b0be-4a2a-9c55-31b10e0a1027}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
