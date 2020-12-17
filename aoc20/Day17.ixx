@@ -38,9 +38,15 @@ namespace AoC
 
 	enum class CubeState : uint8
 	{
-		Inactive,
-		Active,
+		Inactive = 0,
+		InactiveNeighbour = 1,
+		Active = 3,
 	};
+
+	inline void operator|=(CubeState& _a, CubeState const _b)
+	{
+		_a = static_cast<CubeState>(static_cast<uint8>(_a) | static_cast<uint8>(_b));
+	}
 }
 
 namespace
@@ -150,7 +156,7 @@ namespace AoC
 					cubes4D.insert_or_assign(loc4, CubeState::Active);
 					ForEachAround(loc4, [&cubes4D](CubeLoc4 const& _o)
 					{
-						cubes4D.emplace(_o, CubeState::Inactive);
+						cubes4D.emplace(_o, CubeState::InactiveNeighbour);
 					});
 				}
 			}
@@ -223,61 +229,96 @@ namespace AoC
 
 	auto PartB(std::unordered_map<CubeLoc4, CubeState> _cubes)
 	{
-		std::unordered_map<CubeLoc4, CubeState> cubes2 = _cubes;
+		CubeLoc4 const mid{ 6, 6, 6, 6 };
+		CubeState cubes1[20][20][13][13] = { CubeState::Inactive };
+		CubeState cubes2[20][20][13][13] = { CubeState::Inactive };
+		for (auto const& [loc, state] : _cubes)
+		{
+			cubes1[loc.x + mid.x][loc.y + mid.y][loc.z + mid.z][loc.w + mid.w] = state;
+			cubes2[loc.x + mid.x][loc.y + mid.y][loc.z + mid.z][loc.w + mid.w] = state;
+		}
 
-		std::unordered_map<CubeLoc4, CubeState>* readCubes = &_cubes;
-		std::unordered_map<CubeLoc4, CubeState>* writeCubes = &cubes2;
+		CubeState(* readCubes)[20][13][13] = cubes1;
+		CubeState(* writeCubes)[20][13][13] = cubes2;
 
 		for (usize runs = 0; runs < 6; ++runs)
 		{
-			for (auto const& [loc, state] : *readCubes)
+			for (intT x = 0; x < 20; ++x)
 			{
-				uint8 numAround{ 0 };
-				ForEachAround(loc, [&numAround, &readCubes](CubeLoc4 const& _o)
+				for (intT y = 0; y < 20; ++y)
 				{
-					auto cubeI = readCubes->find(_o);
-					numAround += (cubeI != readCubes->end() && cubeI->second == CubeState::Active);
-				});
-				switch (state)
-				{
-					using enum CubeState;
-				case Active:
-				{
-					if (numAround != 2 && numAround != 3)
+					for (intT z = 0; z < 13; ++z)
 					{
-						(*writeCubes)[loc] = Inactive;
-					}
-					else
-					{
-						(*writeCubes)[loc] = Active;
-					}
-					break;
-				}
-				case Inactive:
-				{
-					if (numAround == 3)
-					{
-						(*writeCubes)[loc] = Active;
-						ForEachAround(loc, [&writeCubes](CubeLoc4 const& _o)
+						for (intT w = 0; w < 13; ++w)
 						{
-							writeCubes->emplace(_o, CubeState::Inactive);
-						});
+							CubeState const state = readCubes[x][y][z][w];
+							if (state != CubeState::Inactive)
+							{
+								CubeLoc4 const loc{ x,y,z,w };
+
+								uint8 numAround{ 0 };
+								ForEachAround(loc, [&numAround, &readCubes](CubeLoc4 const& _o)
+								{
+									numAround += readCubes[_o.x][_o.y][_o.z][_o.w] == CubeState::Active;
+								});
+								switch (state)
+								{
+									using enum CubeState;
+								case Active:
+								{
+									if (numAround != 2 && numAround != 3)
+									{
+										writeCubes[x][y][z][w] = InactiveNeighbour;
+									}
+									else
+									{
+										writeCubes[x][y][z][w] = Active;
+									}
+									break;
+								}
+								case InactiveNeighbour:
+								{
+									if (numAround == 3)
+									{
+										writeCubes[x][y][z][w] = Active;
+										ForEachAround(loc, [&writeCubes](CubeLoc4 const& _o)
+										{
+											writeCubes[_o.x][_o.y][_o.z][_o.w] |= CubeState::InactiveNeighbour;
+										});
+									}
+									else
+									{
+										writeCubes[x][y][z][w] = InactiveNeighbour;
+									}
+									break;
+								}
+								case Inactive:
+								{
+									break;
+								}
+								}
+							}
+
+						}
 					}
-					else
-					{
-						(*writeCubes)[loc] = Inactive;
-					}
-					break;
-				}
 				}
 			}
 			std::swap(readCubes, writeCubes);
 		}
 
 		intT activeCount{ 0 };
-		for (auto const& [loc, state] : *readCubes)
+		for (intT x = 0; x < 20; ++x)
 		{
-			activeCount += state == CubeState::Active;
+			for (intT y = 0; y < 20; ++y)
+			{
+				for (intT z = 0; z < 13; ++z)
+				{
+					for (intT w = 0; w < 13; ++w)
+					{
+						activeCount += readCubes[x][y][z][w] == CubeState::Active;
+					}
+				}
+			}
 		}
 
 		return activeCount;
