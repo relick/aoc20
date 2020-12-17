@@ -11,7 +11,7 @@ static constexpr usize N = 17;
 
 namespace AoC
 {
-	using intT = int64;
+	using intT = int32;
 
 	struct CubeLoc
 	{
