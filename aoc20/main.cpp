@@ -26,6 +26,8 @@ import Day15;
 import Day16;
 import Day17;
 
+import Day19;
+
 int main()
 {
 	//std::cout << AoC::Day<1>() << std::endl;
@@ -45,6 +47,8 @@ int main()
 	//std::cout << AoC::Day14() << std::endl;
 	//std::cout << AoC::Day15() << std::endl;
 	//std::cout << AoC::Day16() << std::endl;
-	std::cout << AoC::Day17() << std::endl;
+	//std::cout << AoC::Day17() << std::endl;
+
+	std::cout << AoC::Day19() << std::endl;
 	return 0;
 }
