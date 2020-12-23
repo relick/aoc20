@@ -154,10 +154,11 @@ namespace AoC
 		std::invoke_result_t<F, Args...> Run(F&& _fn, Args&&... _args) const
 		{
 			std::vector<int64> times(m_numRuns, 0);
+			std::invoke_result_t<F, Args...> ret;
 			for (usize i = 0; i < times.size(); ++i)
 			{
 				auto const start = std::chrono::high_resolution_clock::now();
-				_fn(std::forward<Args>(_args)...);
+				ret = _fn(std::forward<Args>(_args)...);
 				auto const end = std::chrono::high_resolution_clock::now();
 				times[i] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 			}
@@ -186,7 +187,7 @@ namespace AoC
 			auto const meanS = GetTimeframe(mean);
 			std::cout << "Mean: [" << meanS.first << meanS.second << "]\n\n";
 
-			return _fn(std::forward<Args>(_args)...); // one last time to get answer
+			return ret; // one last time to get answer
 		}
 	};
 }

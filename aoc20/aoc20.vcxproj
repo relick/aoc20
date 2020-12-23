@@ -184,6 +184,7 @@
     <ClCompile Include="Day20.ixx" />
     <ClCompile Include="Day21.ixx" />
     <ClCompile Include="Day22.ixx" />
+    <ClCompile Include="Day23.ixx" />
     <ClCompile Include="Day9.ixx" />
     <ClCompile Include="Day1.ixx" />
     <ClCompile Include="Day2.ixx" />

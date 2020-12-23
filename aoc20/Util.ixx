@@ -113,6 +113,7 @@ namespace Util
 		usize m_width{ 0 };
 		usize m_height{ 0 };
 	public:
+		Grid(){}
 		Grid(usize _width, usize _height, T const& _init = T())
 			: m_data(_width* _height, _init)
 			, m_width(_width)
