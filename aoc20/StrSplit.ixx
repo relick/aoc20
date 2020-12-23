@@ -10,14 +10,14 @@ namespace util
 	class str_split_iter
 	{
 		str_T const& m_s;
-		DelimFunction m_fn;
+		DelimFunction const& m_fn;
 
 		using str_iter = typename str_T::const_iterator; // for now
 
 		str_iter m_currentBegin;
 		str_iter m_currentEnd;
 
-		void next_nondelim(str_iter& io_iter)
+		void next_nondelim(str_iter& io_iter) const
 		{
 			while (io_iter != m_s.end() && m_fn(*io_iter))
 			{
@@ -25,7 +25,7 @@ namespace util
 			}
 		}
 
-		str_iter find_next()
+		str_iter find_next() const
 		{
 			auto current = m_currentEnd;
 			next_nondelim(current);
@@ -65,12 +65,12 @@ namespace util
 			return clone;
 		}
 
-		std::string_view operator*()
+		std::string_view operator*() const
 		{
 			return std::string_view(m_currentBegin, m_currentEnd);
 		}
 
-		bool operator!=(str_split_iter const& _b)
+		bool operator!=(str_split_iter const& _b) const
 		{
 			return m_currentBegin != _b.m_currentBegin; // assumed ends are equal if begins are equal.
 		}
@@ -100,12 +100,12 @@ namespace util
 			, m_fn{ _fn }
 		{}
 
-		iterator begin()
+		iterator begin() const
 		{
 			return iterator(m_s, m_fn, m_s.begin());
 		}
 
-		iterator end()
+		iterator end() const
 		{
 			return iterator(m_s, m_fn, m_s.end());
 		}
@@ -123,7 +123,7 @@ namespace util
 		{
 			char m_delim;
 			char_is_delim(char _delim) : m_delim{ _delim } {}
-			bool operator()(char const& _c) { return _c == m_delim; }
+			bool operator()(char const& _c) const { return _c == m_delim; }
 		};
 	}
 	export template<typename str_T>
