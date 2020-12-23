@@ -17,7 +17,7 @@ namespace AoC
 	auto Parse(std::vector<std::string> const& _input)
 	{
 		auto const& player1 = _input[0];
-		std::deque<intT> p1;
+		std::vector<intT> p1;
 		bool firstLine = true;
 		for (auto const& line : util::str_split(player1, '\n'))
 		{
@@ -27,11 +27,11 @@ namespace AoC
 				continue;
 			}
 
-			p1.emplace_front(Util::QstoiR<intT>(line));
+			p1.emplace_back(Util::QstoiR<intT>(line));
 		}
 
 		auto const& player2 = _input[1];
-		std::deque<intT> p2;
+		std::vector<intT> p2;
 		firstLine = true;
 		for (auto const& line : util::str_split(player2, '\n'))
 		{
@@ -41,40 +41,40 @@ namespace AoC
 				continue;
 			}
 
-			p2.emplace_front(Util::QstoiR<intT>(line));
+			p2.emplace_back(Util::QstoiR<intT>(line));
 		}
 
 		return std::pair(p1, p2);
 	}
 
-	auto PartA(std::deque<intT> _p1, std::deque<intT> _p2)
+	auto PartA(std::vector<intT> _p1, std::vector<intT> _p2)
 	{
 		while (!_p1.empty() && !_p2.empty())
 		{
-			auto const p1Top = _p1.back();
-			_p1.pop_back();
+			auto const p1Top = _p1.front();
+			_p1.erase(_p1.begin());
 
-			auto const p2Top = _p2.back();
-			_p2.pop_back();
+			auto const p2Top = _p2.front();
+			_p2.erase(_p2.begin());
 
 			if (p1Top > p2Top)
 			{
-				_p1.emplace_front(p1Top);
-				_p1.emplace_front(p2Top);
+				_p1.emplace_back(p1Top);
+				_p1.emplace_back(p2Top);
 			}
 			else
 			{
-				_p2.emplace_front(p2Top);
-				_p2.emplace_front(p1Top);
+				_p2.emplace_back(p2Top);
+				_p2.emplace_back(p1Top);
 			}
 		}
 
-		std::deque<intT> const& winner = _p1.empty() ? _p2 : _p1;
+		std::vector<intT> const& winner = _p1.empty() ? _p2 : _p1;
 
 		uint64 result{ 0 };
-		for (uint64 i = 1; auto const& num : winner)
+		for (uint64 i = winner.size(); auto const& num : winner)
 		{
-			result += i++ * num;
+			result += i-- * num;
 		}
 
 		return result;
@@ -86,10 +86,10 @@ namespace AoC
 		P2,
 	};
 
-	auto PartB_Rec(std::deque<intT>& _p1, std::deque<intT>& _p2)
+	auto PartB_Rec(std::vector<intT>& _p1, std::vector<intT>& _p2)
 	{
-		std::vector<std::deque<intT>> seenBeforeP1;
-		std::vector<std::deque<intT>> seenBeforeP2;
+		std::vector<std::vector<intT>> seenBeforeP1;
+		std::vector<std::vector<intT>> seenBeforeP2;
 
 		while (!_p1.empty() && !_p2.empty())
 		{
@@ -115,49 +115,40 @@ namespace AoC
 			seenBeforeP1.emplace_back(_p1);
 			seenBeforeP2.emplace_back(_p2);
 
-			auto const p1Top = _p1.back();
-			_p1.pop_back();
+			auto const p1Top = _p1.front();
+			_p1.erase(_p1.begin());
 
-			auto const p2Top = _p2.back();
-			_p2.pop_back();
+			auto const p2Top = _p2.front();
+			_p2.erase(_p2.begin());
 
 			if (p1Top > _p1.size() || p2Top > _p2.size())
 			{
 				if (p1Top > p2Top)
 				{
-					_p1.emplace_front(p1Top);
-					_p1.emplace_front(p2Top);
+					_p1.emplace_back(p1Top);
+					_p1.emplace_back(p2Top);
 				}
 				else
 				{
-					_p2.emplace_front(p2Top);
-					_p2.emplace_front(p1Top);
+					_p2.emplace_back(p2Top);
+					_p2.emplace_back(p1Top);
 				}
 			}
 			else
 			{
-				std::deque<intT> newP1;
-				std::deque<intT> newP2;
-
-				for (sizeT i = 0; i < p1Top; ++i)
-				{
-					newP1.emplace_front(_p1[_p1.size() - 1 - i]);
-				}
-				for (sizeT i = 0; i < p2Top; ++i)
-				{
-					newP2.emplace_front(_p2[_p2.size() - 1 - i]);
-				}
+				std::vector<intT> newP1(_p1.begin(), _p1.begin() + p1Top);
+				std::vector<intT> newP2(_p2.begin(), _p2.begin() + p2Top);
 
 				auto const winner = PartB_Rec(newP1, newP2);
 				if (winner == Winner::P1)
 				{
-					_p1.emplace_front(p1Top);
-					_p1.emplace_front(p2Top);
+					_p1.emplace_back(p1Top);
+					_p1.emplace_back(p2Top);
 				}
 				else // winner == Winner::P2
 				{
-					_p2.emplace_front(p2Top);
-					_p2.emplace_front(p1Top);
+					_p2.emplace_back(p2Top);
+					_p2.emplace_back(p1Top);
 				}
 			}
 		}
@@ -165,15 +156,15 @@ namespace AoC
 		return _p1.empty() ? Winner::P2 : Winner::P1;
 	}
 
-	auto PartB(std::deque<intT> _p1, std::deque<intT> _p2)
+	auto PartB(std::vector<intT> _p1, std::vector<intT> _p2)
 	{
 		auto const winner = PartB_Rec(_p1, _p2);
 		auto const& winningDeck = (winner == Winner::P1) ? _p1 : _p2;
 
 		uint64 result{ 0 };
-		for (uint64 i = 1; auto const& num : winningDeck)
+		for (uint64 i = winningDeck.size(); auto const& num : winningDeck)
 		{
-			result += i++ * num;
+			result += i-- * num;
 		}
 
 		return result;

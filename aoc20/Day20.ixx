@@ -281,7 +281,7 @@ namespace AoC
 				breakout2:;
 					if (tileGrid.at(x, y) == sentinel)
 					{
-						nBorder.Switch();
+						//nBorder.Switch();
 						goto tryAgain2;
 					}
 				}
@@ -308,7 +308,7 @@ namespace AoC
 				breakout3:;
 					if (x == 1 && tileGrid.at(x, y) == sentinel)
 					{
-						nBorder.Switch();
+						//nBorder.Switch();
 						goto tryAgain3;
 					}
 				}
