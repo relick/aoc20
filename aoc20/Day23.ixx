@@ -27,17 +27,20 @@ namespace AoC
 	auto Parse(std::string const& _input)
 	{
 		std::vector<CList<intT>> cups(_input.size());
-		std::vector<CList<intTB>> cupsB(1000000);
+		std::vector<sizeTB> cupsB(1000001);
 		usize nextCup = 0;
+		sizeTB prevVal = (sizeTB)cupsB.size() - 1;
 		for (auto const& c : _input)
 		{
-			cups[nextCup].val = static_cast<intT>(c - '0');
-			cupsB[nextCup++].val = static_cast<intT>(c - '0');
+			cups[nextCup++].val = static_cast<intT>(c - '0');
+			cupsB[prevVal] = c - '0';
+			prevVal = c - '0';
 		}
 
-		for (intTB i = (intTB)_input.size() + 1; i <= 1000000; ++i)
+		for (intTB i = (intTB)_input.size() + 1; i <=   1000000; ++i)
 		{
-			cupsB[i - 1].val = i;
+			cupsB[prevVal] = i;
+			prevVal = i;
 		}
 
 		return std::pair(cups, cupsB);
@@ -132,45 +135,28 @@ namespace AoC
 		return ret;
 	}
 
-	auto PartB(std::vector<CList<intTB>> _cups)
+	auto PartB(std::vector<sizeTB> _cups)
 	{
-		MakeList(_cups);
-		std::unordered_map<intTB, CList<intTB>*> valToNode;
-		valToNode.reserve(_cups.size());
-		for (auto& node : _cups)
-		{
-			valToNode.emplace(node.val, &node);
-		}
-		CList<intTB>* curCup = &_cups[0];
-		std::array<CList<intTB>*, 3> pickedUp;
+		sizeTB curCup = _cups.back();
+		std::array<sizeTB, 3> pickedUp;
 
-		auto const max = [&]() -> intTB
-		{
-			auto max = curCup->val;
-			auto head = curCup->next;
-			while (head != curCup)
-			{
-				max = std::max(max, head->val);
-				head = head->next;
-			}
-			return max;
-		}();
+		sizeTB const max = (sizeTB)_cups.size() - 1;
 
 		for (sizeTB r = 0; r < 10000000; ++r)
 		{
-			auto destNum = curCup->val;
+			auto destNum = curCup;
 
 			// keep track of moving numbers
-			pickedUp[0] = curCup->next;
-			pickedUp[1] = pickedUp[0]->next;
-			pickedUp[2] = pickedUp[1]->next;
+			pickedUp[0] = _cups[curCup]; // == curCup->next
+			pickedUp[1] = _cups[pickedUp[0]]; // == pickedUp[0]->next
+			pickedUp[2] = _cups[pickedUp[1]]; // == pickedUp[1]->next
 
 			// erase moving numbers
-			curCup->next = pickedUp[2]->next;
+			_cups[curCup] = _cups[pickedUp[2]];
 
 			// find dest num
 			bool decOnce = true;
-			while (decOnce || destNum == pickedUp[0]->val || destNum == pickedUp[1]->val || destNum == pickedUp[2]->val)
+			while (decOnce || destNum == pickedUp[0] || destNum == pickedUp[1] || destNum == pickedUp[2])
 			{
 				--destNum;
 				if (destNum == 0)
@@ -180,20 +166,17 @@ namespace AoC
 				decOnce = false;
 			}
 
-			// find dest pos
-			CList<intTB>* destCup = valToNode[destNum];
-
 			// insert 3 back in.
-			pickedUp[2]->next = destCup->next;
-			destCup->next = pickedUp[0];
+			_cups[pickedUp[2]] = _cups[destNum];
+			_cups[destNum] = pickedUp[0];
 
 			// forward curCup
-			curCup = curCup->next;
+			curCup = _cups[curCup];
 		}
 
-		curCup = valToNode[1];
+		curCup = 1;
 
-		return (uint64) curCup->next->next->val * curCup->next->val;
+		return (uint64) _cups[_cups[curCup]] * _cups[curCup];
 	}
 
 	export std::string Day23()
