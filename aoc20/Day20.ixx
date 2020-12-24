@@ -34,11 +34,17 @@ namespace AoC
 		void Rotate()
 		{
 			++rotation;
-			auto const swap = up;
+			auto swap = up;
 			up = right;
 			right = down;
 			down = left;
 			left = swap;
+
+			swap = upF;
+			upF = rightF;
+			rightF = downF;
+			downF = leftF;
+			leftF = swap;
 
 			if (rotation == 4)
 			{
@@ -46,6 +52,7 @@ namespace AoC
 				std::swap(left, leftF);
 				std::swap(right, rightF);
 				std::swap(up, down);
+				std::swap(upF, downF);
 			}
 			else if (rotation == 8)
 			{
@@ -53,9 +60,11 @@ namespace AoC
 				std::swap(left, leftF);
 				std::swap(right, rightF);
 				std::swap(up, down);
+				std::swap(upF, downF);
 				std::swap(up, upF);
 				std::swap(down, downF);
 				std::swap(left, right);
+				std::swap(leftF, rightF);
 
 			}
 			else if (rotation == 12)
@@ -64,7 +73,56 @@ namespace AoC
 				std::swap(up, upF);
 				std::swap(down, downF);
 				std::swap(left, right);
+				std::swap(leftF, rightF);
 				rotation = 0;
+			}
+		}
+
+		void Rotate(uint8 _r)
+		{
+			while (rotation != _r)
+			{
+				Rotate();
+			}
+		}
+
+		void SwitchL()
+		{
+			// maintains up-down borders
+			switch (rotation)
+			{
+			case 0: Rotate(6); break;
+			case 1: Rotate(11); break;
+			case 2: Rotate(4); break;
+			case 3: Rotate(9); break;
+			case 4: Rotate(2); break;
+			case 5: break;
+			case 6: Rotate(0); break;
+			case 7: break;
+			case 8: break;
+			case 9: Rotate(3); break;
+			case 10: break;
+			case 11: Rotate(1); break;
+			}
+		}
+
+		void SwitchU()
+		{
+			// maintains left-right borders
+			switch (rotation)
+			{
+			case 0: Rotate(10); break;
+			case 1: Rotate(7); break;
+			case 2: Rotate(8); break;
+			case 3: Rotate(5); break;
+			case 4: break;
+			case 5: Rotate(3); break;
+			case 6: break;
+			case 7: Rotate(1); break;
+			case 8: Rotate(2); break;
+			case 9: break;
+			case 10: Rotate(0); break;
+			case 11: break;
 			}
 		}
 	};
@@ -258,58 +316,46 @@ namespace AoC
 				{
 					continue; // first corner filled already.
 				}
-				else if (y == 0)
-				{
-				tryAgain2:;
-					usize const& neighbour = tileGrid.at(x - 1, y);
-					TileBorders& nBorder = _tiles[neighbour];
-					for (usize tileI = 0; tileI < _tiles.size(); ++tileI)
-					{
-						if (tileI != neighbour)
-						{
-							for (usize i = 0; i < 12; ++i)
-							{
-								if (_tiles[tileI].left == nBorder.right)
-								{
-									tileGrid.at(x, y) = tileI;
-									goto breakout2;
-								}
-								_tiles[tileI].Rotate();
-							}
-						}
-					}
-				breakout2:;
-					if (tileGrid.at(x, y) == sentinel)
-					{
-						//nBorder.Switch();
-						goto tryAgain2;
-					}
-				}
 				else
 				{
-				tryAgain3:;
-					usize const& neighbour = tileGrid.at(x, y - 1);
-					TileBorders& nBorder = _tiles[neighbour];
+				tryAgain:;
+					usize const& neighbourL = x > 0 ? tileGrid.at(x - 1, y) : tileGrid[0];
+					usize const& neighbourU = y > 0 ? tileGrid.at(x, y - 1) : tileGrid[0];
+					//TileBorders& lBorder = _tiles[neighbourL];
+					//TileBorders& uBorder = _tiles[neighbourU];
+					bool leftEverOkay = false;
+					bool upEverOkay = false;
 					for (usize tileI = 0; tileI < _tiles.size(); ++tileI)
 					{
-						if (tileI != neighbour)
+						if (tileI != neighbourL && tileI != neighbourU)
 						{
 							for (usize i = 0; i < 12; ++i)
 							{
-								if (_tiles[tileI].up == nBorder.down)
+								bool const leftOkay = (x == 0 || _tiles[tileI].leftF == _tiles[neighbourL].right);
+								bool const upOkay = (y == 0 || _tiles[tileI].upF == _tiles[neighbourU].down);
+								leftEverOkay |= leftOkay;
+								upEverOkay |= upOkay;
+								if (leftOkay && upOkay)
 								{
 									tileGrid.at(x, y) = tileI;
-									goto breakout3;
+									goto breakout4;
 								}
 								_tiles[tileI].Rotate();
 							}
 						}
 					}
-				breakout3:;
-					if (x == 1 && tileGrid.at(x, y) == sentinel)
+				breakout4:;
+					if (tileGrid.at(x, y) == sentinel)
 					{
-						//nBorder.Switch();
-						goto tryAgain3;
+						if (x == 1 && !leftEverOkay)
+						{
+							_tiles[neighbourL].SwitchL();
+						}
+						if (y == 1 && !upEverOkay)
+						{
+							_tiles[neighbourU].SwitchU();
+						}
+						goto tryAgain;
 					}
 				}
 			}
