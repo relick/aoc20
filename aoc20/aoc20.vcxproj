@@ -195,6 +195,7 @@
     <ClCompile Include="Day6.ixx" />
     <ClCompile Include="Day7.ixx" />
     <ClCompile Include="Day8.ixx" />
+    <ClCompile Include="Days.ixx" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="StrSplit.ixx" />
     <ClCompile Include="Util.ixx" />

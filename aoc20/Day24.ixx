@@ -228,9 +228,9 @@ namespace AoC
 	export std::string Day24()
 	{
 		auto const input = Benchmark("24 Read", 1).Run([]() { return Input(N).ToLines(); });
-		auto const directions = Benchmark("24 Parse", 1).Run(Parse, input);
-		auto const [resultA, blackTilesStart] = Benchmark("24A", 1).Run(PartA, directions);
-		auto const resultB = Benchmark("24B", 1).Run(PartB, blackTilesStart);
+		auto const directions = Benchmark("24 Parse").Run(Parse, input);
+		auto const [resultA, blackTilesStart] = Benchmark("24A").Run(PartA, directions);
+		auto const resultB = Benchmark("24B", 10).Run(PartB, blackTilesStart);
 
 		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}

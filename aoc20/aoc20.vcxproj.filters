@@ -86,6 +86,9 @@
     <ClCompile Include="Day24.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Days.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Modules">
