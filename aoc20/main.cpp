@@ -30,11 +30,11 @@ int main()
 	//std::cout << AoC::Day16() << std::endl;
 	//std::cout << AoC::Day17() << std::endl;
 
-	//std::cout << AoC::Day19() << std::endl;
+	std::cout << AoC::Day19() << std::endl;
 	//std::cout << AoC::Day20() << std::endl;
 	//std::cout << AoC::Day21() << std::endl;
 	//std::cout << AoC::Day22() << std::endl;
 	//std::cout << AoC::Day23() << std::endl;
-	std::cout << AoC::Day24() << std::endl;
+	//std::cout << AoC::Day24() << std::endl;
 	return 0;
 }

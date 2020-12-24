@@ -9,13 +9,6 @@ import StrSplit;
 
 static constexpr usize N = 19;
 
-template<typename T>
-std::vector<T>& operator+=(std::vector<T>& _a, std::vector<T> const& _b)
-{
-	_a.insert(_a.end(), _b.begin(), _b.end());
-	return _a;
-}
-
 namespace AoC
 {
 	using intT = int64;
@@ -25,14 +18,14 @@ namespace AoC
 	{
 		virtual ~Rule() {}
 
-		virtual std::vector<sizeT> Check(std::string_view const& _sv) const = 0;
+		virtual bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const = 0;
 	};
 
 	struct Terminator : public Rule
 	{
-		std::vector<sizeT> Check(std::string_view const& _sv) const override
+		bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const override
 		{
-			return _sv.size() == 0 ? std::vector<sizeT>{ 0 } : std::vector<sizeT>{};
+			return _sv.size() == 0 ? io_validLens.emplace_back(0), true : false;
 		}
 	};
 
@@ -43,9 +36,9 @@ namespace AoC
 			: m_c{ _c }
 		{}
 
-		std::vector<sizeT> Check(std::string_view const& _sv) const override
+		bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const override
 		{
-			return !_sv.empty() && _sv[0] == m_c ? std::vector<sizeT>{ 1 } : std::vector<sizeT>{};
+			return !_sv.empty() && _sv[0] == m_c ? io_validLens.emplace_back(1), true : false;
 		}
 	};
 
@@ -58,16 +51,16 @@ namespace AoC
 			, m_b{ _b }
 		{}
 
-		std::vector<sizeT> Check(std::string_view const& _sv) const override
+		bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const override
 		{
 			// assume that a termination rule never occurs in an alternation
 			if (_sv.empty())
 			{
-				return std::vector<sizeT>{};
+				return false;
 			}
-			auto aCheck = m_a->Check(_sv);
-			auto const bCheck = m_b->Check(_sv);
-			return aCheck += bCheck;
+			auto const aCheck = m_a->Check(io_validLens, _sv);
+			auto const bCheck = m_b->Check(io_validLens, _sv);
+			return aCheck || bCheck;
 		}
 	};
 
@@ -80,22 +73,28 @@ namespace AoC
 			, m_b{ _b }
 		{}
 
-		std::vector<sizeT> Check(std::string_view const& _sv) const override
+		bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const override
 		{
 			// assume that a termination rule only ever occurs in the second position of a concatenation.
 			if (_sv.empty())
 			{
-				return std::vector<sizeT>{};
+				return false;
 			}
-			auto const aCheck = m_a->Check(_sv);
-			std::vector<sizeT> output;
-			output.reserve(aCheck.size());
-			for (auto const& len : aCheck)
+
+			std::vector<sizeT> a;
+			a.reserve(io_validLens.size());
+			auto const aCheck = m_a->Check(a, _sv);
+			std::vector<sizeT> b;
+			b.reserve(io_validLens.size());
+			bool foundAny = false;
+			for (auto const& len : a)
 			{
-				auto const bCheck = m_b->Check(_sv.substr(len));
-				for (auto const& bLen : bCheck)
+				b.clear();
+				auto const bCheck = m_b->Check(b, _sv.substr(len));
+				for (auto const& bLen : b)
 				{
-					output.push_back(len + bLen);
+					io_validLens.push_back(len + bLen);
+					foundAny = true;
 				}
 			}
 
@@ -103,7 +102,7 @@ namespace AoC
 			//std::sort(output.begin(), output.end());
 			//output.erase(std::unique(output.begin(), output.end()), output.end());
 
-			return output;
+			return foundAny;
 		}
 	};
 
@@ -114,9 +113,9 @@ namespace AoC
 			: m_a{ _a }
 		{}
 
-		std::vector<sizeT> Check(std::string_view const& _sv) const override
+		bool Check(std::vector<sizeT>& io_validLens, std::string_view const& _sv) const override
 		{
-			return m_a->Check(_sv);
+			return m_a->Check(io_validLens, _sv);
 		}
 
 		void Update(Rule* _a)
@@ -257,7 +256,8 @@ namespace AoC
 		uint64 sum = 0;
 		for (auto const& message : _messages)
 		{
-			bool const matched = !_rules[0]->Check(std::string_view(message)).empty();
+			std::vector<sizeT> a;
+			bool const matched = _rules[0]->Check(a, std::string_view(message));
 			if (matched)
 			{
 				sum += 1;

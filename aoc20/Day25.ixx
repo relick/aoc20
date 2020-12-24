@@ -16,12 +16,12 @@ namespace AoC
 		return 0;
 	}
 
-	auto PartA(std::vector<std::vector<Direction>> const& _directions)
+	auto PartA(uint64 const& _directions)
 	{
 		return 0;
 	}
 
-	auto PartB(std::unordered_set<Pos> _blackTiles)
+	auto PartB(uint64 _blackTiles)
 	{
 		return 0;
 	}
