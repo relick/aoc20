@@ -56,20 +56,24 @@ namespace AoC
 
 		std::pair<bool, sizeT> Check(std::string_view const& _sv) const override
 		{
-			auto const [aOkay, aLength] = m_a->Check(_sv);
-			if (aOkay)
 			{
-				return { true, aLength };
+				auto const [aOkay, aLength] = m_a->Check(_sv);
+				if (aOkay)
+				{
+					return { true, aLength };
+				}
 			}
 			return m_a->Check2(_sv);
 		}
 
 		std::pair<bool, sizeT> Check2(std::string_view const& _sv) const override
 		{
-			auto const [bOkay, bLength] = m_b->Check(_sv);
-			if (bOkay)
 			{
-				return { true, bLength };
+				auto const [bOkay, bLength] = m_b->Check(_sv);
+				if (bOkay)
+				{
+					return { true, bLength };
+				}
 			}
 			return m_b->Check2(_sv);
 		}
@@ -86,11 +90,6 @@ namespace AoC
 
 		std::pair<bool, sizeT> Check(std::string_view const& _sv) const override
 		{
-			// assume that a termination rule only ever occurs at the end of a concatenation.
-			if (_sv.empty())
-			{
-				return { false, 0 };
-			}
 			auto const [aOkay, aLength] = m_a->Check(_sv);
 			if (aOkay)
 			{
@@ -99,14 +98,14 @@ namespace AoC
 				{
 					return { true, aLength + bLength };
 				}
-
+				
 				auto const [b2Okay, b2Length] = m_b->Check2(_sv.substr(aLength));
 				if (b2Okay)
 				{
 					return { true, aLength + b2Length };
 				}
 			}
-
+			
 			auto const [a2Okay, a2Length] = m_a->Check2(_sv);
 			if (a2Okay)
 			{
@@ -143,11 +142,6 @@ namespace AoC
 		{
 			return m_a->Check2(_sv);
 		}
-
-		void Update(Rule* _a)
-		{
-			m_a = _a;
-		}
 	};
 
 	Rule* MakeRule(std::vector<std::unique_ptr<Rule>>& io_rules, std::vector<std::string> const& _oRules, usize _ruleI)
@@ -167,6 +161,10 @@ namespace AoC
 		{
 			if (tok[0] == '|')
 			{
+				if (alternate)
+				{
+					std::cout << "alternated twice!\n\n";
+				}
 				alternate = true;
 			}
 			else
@@ -184,28 +182,19 @@ namespace AoC
 				}
 				else
 				{
-					usize const nextI = Util::QstoiR<usize>(tok);
-					if (nextI == _ruleI)
+					if (!toUpdate)
 					{
-						// we have a self-ref. make an empty clone and fill it in with the final ptr for our rule later
-						io_rules[_ruleI] = std::unique_ptr<Rule>(new Clone{ nullptr });
-					}
-
-					if (toUpdate)
-					{
-						inserted = true;
-						io_rules.emplace_back(new Concatenate{ toUpdate, MakeRule(io_rules, _oRules, nextI) });
-						toUpdate = io_rules.back().get();
+						toUpdate = MakeRule(io_rules, _oRules, Util::QstoiR<usize>(tok));
 					}
 					else
 					{
-						toUpdate = MakeRule(io_rules, _oRules, nextI);
+						inserted = true;
+						io_rules.emplace_back(new Concatenate{ toUpdate, MakeRule(io_rules, _oRules, Util::QstoiR<usize>(tok)) });
+						toUpdate = io_rules.back().get();
 					}
 				}
 			}
 		}
-
-		std::unique_ptr<Rule> selfRefRule = std::move(io_rules[_ruleI]);
 
 		if (alternate)
 		{
@@ -220,13 +209,6 @@ namespace AoC
 		{
 			io_rules[_ruleI] = std::unique_ptr<Rule>{ new Clone{a} };
 		}
-
-		if (selfRefRule)
-		{
-			static_cast<Clone*>(selfRefRule.get())->Update(io_rules[_ruleI].get());
-			io_rules.emplace_back(std::move(selfRefRule));
-		}
-
 		return io_rules[_ruleI].get();
 	}
 
@@ -277,38 +259,27 @@ namespace AoC
 		return std::pair(std::move(rules), messages);
 	}
 
-	auto NumSatisfyRuleZero(std::vector<std::unique_ptr<Rule>> const& _rules, std::vector<std::string> const& _messages, bool _part1)
+	auto PartA(std::vector<std::unique_ptr<Rule>> const& _rules, std::vector<std::string> const& _messages)
 	{
 		uint64 sum = 0;
 		for (auto const& message : _messages)
 		{
-			if (!_part1 && message == "aaa")
-			{
-				std::cout << "it's time\n";
-			}
-
-			bool const matched = _rules[0]->Check(std::string_view(message)).first;
-			if (matched)
-			{
-				sum += 1;
-			}
-			else
-			{
-				std::cout << message << " failed\n";
-			}
+			sum += _rules[0]->Check(std::string_view(message)).first;
 		}
 		return sum;
 	}
 
+	auto PartB(std::vector<std::unique_ptr<Rule>> const& _rules, std::vector<std::string> const& _messages)
+	{
+		return 0;
+	}
+
 	export std::string Day19()
 	{
-		auto const inputA = Benchmark("19 Read A", 1).Run([]() { return Input(N, "test2_part1").ToLines(); });
-		auto const [rulesA, messagesA] = Benchmark("19 Parse A", 1).Run(Parse, inputA);
-		auto const resultA = Benchmark("19A", 1).Run(NumSatisfyRuleZero, rulesA, messagesA, true);
-
-		auto const inputB = Benchmark("19 Read B", 1).Run([]() { return Input(N, "basic_part2").ToLines(); });
-		auto const [rulesB, messagesB] = Benchmark("19 Parse B", 1).Run(Parse, inputB);
-		auto const resultB = Benchmark("19B", 1).Run(NumSatisfyRuleZero, rulesB, messagesB, false);
+		auto const input = Benchmark("19 Read", 1).Run([]() { return Input(N).ToLines(); });
+		auto const [rules, messages] = Benchmark("19 Parse", 1).Run(Parse, input);
+		auto const resultA = Benchmark("19A", 1).Run(PartA, rules, messages);
+		auto const resultB = Benchmark("19B", 1).Run(PartB, rules, messages);
 
 		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}

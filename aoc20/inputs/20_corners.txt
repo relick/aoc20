@@ -1,0 +1,11 @@
+corner tileI:
+28
+30
+98
+138
+
+corner tileID:
+3557
+3769
+1019
+1097

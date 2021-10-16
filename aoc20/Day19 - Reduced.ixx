@@ -21,7 +21,6 @@ namespace AoC
 		virtual ~Rule() {}
 
 		virtual std::pair<bool, sizeT> Check(std::string_view const& _sv) const = 0;
-		virtual std::pair<bool, sizeT> Check2(std::string_view const& _sv) const { return { false, 0 }; }
 	};
 
 	struct Terminator : public Rule
@@ -61,17 +60,7 @@ namespace AoC
 			{
 				return { true, aLength };
 			}
-			return m_a->Check2(_sv);
-		}
-
-		std::pair<bool, sizeT> Check2(std::string_view const& _sv) const override
-		{
-			auto const [bOkay, bLength] = m_b->Check(_sv);
-			if (bOkay)
-			{
-				return { true, bLength };
-			}
-			return m_b->Check2(_sv);
+			return m_b->Check(_sv);
 		}
 	};
 
@@ -86,11 +75,6 @@ namespace AoC
 
 		std::pair<bool, sizeT> Check(std::string_view const& _sv) const override
 		{
-			// assume that a termination rule only ever occurs at the end of a concatenation.
-			if (_sv.empty())
-			{
-				return { false, 0 };
-			}
 			auto const [aOkay, aLength] = m_a->Check(_sv);
 			if (aOkay)
 			{
@@ -98,28 +82,6 @@ namespace AoC
 				if (bOkay)
 				{
 					return { true, aLength + bLength };
-				}
-
-				auto const [b2Okay, b2Length] = m_b->Check2(_sv.substr(aLength));
-				if (b2Okay)
-				{
-					return { true, aLength + b2Length };
-				}
-			}
-
-			auto const [a2Okay, a2Length] = m_a->Check2(_sv);
-			if (a2Okay)
-			{
-				auto const [bOkay, bLength] = m_b->Check(_sv.substr(a2Length));
-				if (bOkay)
-				{
-					return { true, a2Length + bLength };
-				}
-
-				auto const [b2Okay, b2Length] = m_b->Check2(_sv.substr(a2Length));
-				if (b2Okay)
-				{
-					return { true, a2Length + b2Length };
 				}
 			}
 
@@ -137,11 +99,6 @@ namespace AoC
 		std::pair<bool, sizeT> Check(std::string_view const& _sv) const override
 		{
 			return m_a->Check(_sv);
-		}
-
-		std::pair<bool, sizeT> Check2(std::string_view const& _sv) const override
-		{
-			return m_a->Check2(_sv);
 		}
 
 		void Update(Rule* _a)
@@ -163,10 +120,15 @@ namespace AoC
 		Rule* a{ nullptr };
 		Rule* b{ nullptr };
 		bool inserted = false;
+		bool selfReferential = false;
 		for (auto const& tok : util::str_split(_oRules[_ruleI], ' '))
 		{
 			if (tok[0] == '|')
 			{
+				if (alternate)
+				{
+					std::cout << "alternated twice!\n\n";
+				}
 				alternate = true;
 			}
 			else
@@ -184,28 +146,41 @@ namespace AoC
 				}
 				else
 				{
-					usize const nextI = Util::QstoiR<usize>(tok);
-					if (nextI == _ruleI)
+					if (!toUpdate)
 					{
-						// we have a self-ref. make an empty clone and fill it in with the final ptr for our rule later
-						io_rules[_ruleI] = std::unique_ptr<Rule>(new Clone{ nullptr });
-					}
-
-					if (toUpdate)
-					{
-						inserted = true;
-						io_rules.emplace_back(new Concatenate{ toUpdate, MakeRule(io_rules, _oRules, nextI) });
-						toUpdate = io_rules.back().get();
+						usize const nextI = Util::QstoiR<usize>(tok);
+						if (nextI == _ruleI)
+						{
+							selfReferential = true;
+							io_rules[_ruleI] = std::unique_ptr<Rule>(new Clone{ nullptr });
+							toUpdate = io_rules[_ruleI].get();
+						}
+						else
+						{
+							toUpdate = MakeRule(io_rules, _oRules, nextI);
+						}
 					}
 					else
 					{
-						toUpdate = MakeRule(io_rules, _oRules, nextI);
+						inserted = true;
+						usize const nextI = Util::QstoiR<usize>(tok);
+						if (nextI == _ruleI)
+						{
+							selfReferential = true;
+							io_rules[_ruleI] = std::unique_ptr<Rule>(new Clone{ nullptr });
+							io_rules.emplace_back(new Concatenate{ toUpdate, io_rules[_ruleI].get() });
+						}
+						else
+						{
+							io_rules.emplace_back(new Concatenate{ toUpdate, MakeRule(io_rules, _oRules, nextI) });
+						}
+						toUpdate = io_rules.back().get();
 					}
 				}
 			}
 		}
 
-		std::unique_ptr<Rule> selfRefRule = std::move(io_rules[_ruleI]);
+		std::unique_ptr<Rule> selfRefRule = selfReferential ? std::move(io_rules[_ruleI]) : nullptr;
 
 		if (alternate)
 		{
@@ -277,25 +252,12 @@ namespace AoC
 		return std::pair(std::move(rules), messages);
 	}
 
-	auto NumSatisfyRuleZero(std::vector<std::unique_ptr<Rule>> const& _rules, std::vector<std::string> const& _messages, bool _part1)
+	auto NumSatisfyRuleZero(std::vector<std::unique_ptr<Rule>> const& _rules, std::vector<std::string> const& _messages)
 	{
 		uint64 sum = 0;
 		for (auto const& message : _messages)
 		{
-			if (!_part1 && message == "aaa")
-			{
-				std::cout << "it's time\n";
-			}
-
-			bool const matched = _rules[0]->Check(std::string_view(message)).first;
-			if (matched)
-			{
-				sum += 1;
-			}
-			else
-			{
-				std::cout << message << " failed\n";
-			}
+			sum += _rules[0]->Check(std::string_view(message)).first;
 		}
 		return sum;
 	}
@@ -304,11 +266,10 @@ namespace AoC
 	{
 		auto const inputA = Benchmark("19 Read A", 1).Run([]() { return Input(N, "test2_part1").ToLines(); });
 		auto const [rulesA, messagesA] = Benchmark("19 Parse A", 1).Run(Parse, inputA);
-		auto const resultA = Benchmark("19A", 1).Run(NumSatisfyRuleZero, rulesA, messagesA, true);
-
-		auto const inputB = Benchmark("19 Read B", 1).Run([]() { return Input(N, "basic_part2").ToLines(); });
+		auto const resultA = Benchmark("19A", 1).Run(NumSatisfyRuleZero, rulesA, messagesA);
+		auto const inputB = Benchmark("19 Read B", 1).Run([]() { return Input(N, "test2_part2").ToLines(); });
 		auto const [rulesB, messagesB] = Benchmark("19 Parse B", 1).Run(Parse, inputB);
-		auto const resultB = Benchmark("19B", 1).Run(NumSatisfyRuleZero, rulesB, messagesB, false);
+		auto const resultB = Benchmark("19B", 1).Run(NumSatisfyRuleZero, rulesB, messagesB);
 
 		return NiceOutput(N, std::to_string(resultA), std::to_string(resultB));
 	}
