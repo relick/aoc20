@@ -1,6 +1,7 @@
 export module Day3;
 
-import std.core;
+import <vector>;
+import <string>;
 
 import Common;
 import AoC;

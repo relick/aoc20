@@ -1,7 +1,9 @@
 export module Day4;
 
-import std.core;
-import std.regex;
+import <vector>;
+import <string>;
+import <regex>;
+import <unordered_map>;
 
 import Common;
 import AoC;

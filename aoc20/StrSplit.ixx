@@ -1,6 +1,7 @@
 export module StrSplit;
 
-import std.core;
+import <concepts>;
+import <string>;
 
 import Common;
 

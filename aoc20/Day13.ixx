@@ -1,6 +1,9 @@
 export module Day13;
 
-import std.core;
+import <vector>;
+import <string>;
+import <algorithm>;
+import <numeric>;
 
 import Common;
 import AoC;

@@ -1,6 +1,11 @@
 export module Day20;
 
-import std.core;
+import <vector>;
+import <string>;
+import <unordered_map>;
+import <algorithm>;
+import <numeric>;
+import <array>;
 
 import Common;
 import AoC;
@@ -89,7 +94,7 @@ namespace AoC
 			{
 				newStrippedData.emplace_back();
 				std::string& line = newStrippedData.back();
-				for (isize j = 0; j < strippedData[0].size(); ++j)
+				for (usize j = 0; j < strippedData[0].size(); ++j)
 				{
 					line += strippedData[j][i];
 				}

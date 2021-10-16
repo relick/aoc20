@@ -1,6 +1,6 @@
 ﻿export module Common;
 
-import std.core;
+import <cstdint>;
 
 export using uint64 = uint_fast64_t;
 export using int64 = int_fast64_t;

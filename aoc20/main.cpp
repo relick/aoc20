@@ -1,10 +1,4 @@
-// the 5 imports below contain the whole of std
-// use this for reference.
-import std.core;
-//import std.regex;
-//import std.filesystem;
-//import std.memory;
-//import std.threading;
+import <iostream>;
 
 import AoC;
 import Days;

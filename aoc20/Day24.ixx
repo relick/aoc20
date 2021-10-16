@@ -1,6 +1,9 @@
 export module Day24;
 
-import std.core;
+import <vector>;
+import <string>;
+import <unordered_set>;
+import <unordered_map>;
 
 import Common;
 import AoC;

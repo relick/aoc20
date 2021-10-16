@@ -1,6 +1,8 @@
 export module Day19;
 
-import std.core;
+import <vector>;
+import <string>;
+import <memory>;
 
 import Common;
 import AoC;

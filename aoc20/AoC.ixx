@@ -1,6 +1,11 @@
 export module AoC;
 
-import std.core;
+import <fstream>; // this must be a bug, but putting fstream after string causes a missing definition error!
+import <string>;
+import <vector>;
+import <chrono>;
+import <numeric>;
+import <iostream>;
 
 import Common;
 

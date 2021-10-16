@@ -1,10 +1,11 @@
-module;
-
-#include <smmintrin.h>
-
 export module Day12Intrin;
 
-import std.core;
+import <smmintrin.h>;
+import <utility>;
+import <vector>;
+import <string>;
+import <memory>;
+import <array>;
 
 import Common;
 import AoC;

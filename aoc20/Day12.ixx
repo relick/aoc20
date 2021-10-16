@@ -1,6 +1,8 @@
 export module Day12;
 
-import std.core;
+import <vector>;
+import <string>;
+import <array>;
 
 import Common;
 import AoC;

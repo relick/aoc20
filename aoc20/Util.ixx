@@ -1,6 +1,8 @@
 export module Util;
 
-import std.core;
+import <concepts>;
+import <string>;
+import <vector>;
 
 import Common;
 

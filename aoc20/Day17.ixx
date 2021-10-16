@@ -1,6 +1,8 @@
 export module Day17;
 
-import std.core;
+import <vector>;
+import <string>;
+import <unordered_map>;
 
 import Common;
 import AoC;
